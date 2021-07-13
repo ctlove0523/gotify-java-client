@@ -8,4 +8,6 @@ public interface GotifyClient {
 	AppClient getAppClient();
 
 	MessageClient getMessageClient();
+
+	DeviceClient getDeviceClient();
 }
