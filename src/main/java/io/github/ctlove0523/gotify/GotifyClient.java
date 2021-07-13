@@ -10,4 +10,6 @@ public interface GotifyClient {
 	MessageClient getMessageClient();
 
 	DeviceClient getDeviceClient();
+
+	HealthClient getHealthClient();
 }
