@@ -13,6 +13,6 @@ public interface AppClient extends CloseableClient {
 
 	boolean deleteApplication(int id);
 
-	Application uploadApplicationImage(int id,byte[] image);
+	Application uploadApplicationImage(int id, byte[] image);
 
 }
