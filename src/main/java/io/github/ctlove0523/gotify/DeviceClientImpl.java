@@ -19,9 +19,9 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 public class DeviceClientImpl implements DeviceClient {
-	private InnerGotifyClientConfig clientConfig;
+	private GotifyClientConfig clientConfig;
 
-	DeviceClientImpl(InnerGotifyClientConfig clientConfig) {
+	DeviceClientImpl(GotifyClientConfig clientConfig) {
 		this.clientConfig = clientConfig;
 	}
 
@@ -32,8 +32,12 @@ public class DeviceClientImpl implements DeviceClient {
 
 		OkHttpClient client = new OkHttpClient.Builder()
 				.build();
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/client")
+				.build();
 		Request request = new Request.Builder()
-				.url(buildUri("/client", null))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.get()
 				.build();
@@ -65,8 +69,13 @@ public class DeviceClientImpl implements DeviceClient {
 				.build();
 		RequestBody requestBody = RequestBody
 				.create(JacksonUtil.object2String(client), MediaType.get("application/json"));
+
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/client")
+				.build();
 		Request request = new Request.Builder()
-				.url(buildUri("/client", null))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.post(requestBody)
 				.build();
@@ -100,8 +109,14 @@ public class DeviceClientImpl implements DeviceClient {
 				.create(JacksonUtil.object2String(client), MediaType.get("application/json"));
 		Map<String, Object> pathParas = new HashMap<>();
 		pathParas.put("id", id);
+
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/client/{id}")
+				.pathParams(pathParas)
+				.build();
 		Request request = new Request.Builder()
-				.url(buildUri("/client/{id}", pathParas))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.put(requestBody)
 				.build();
@@ -134,8 +149,14 @@ public class DeviceClientImpl implements DeviceClient {
 				.build();
 		Map<String, Object> pathParas = new HashMap<>();
 		pathParas.put("id", id);
+
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/client/{id}")
+				.pathParams(pathParas)
+				.build();
 		Request request = new Request.Builder()
-				.url(buildUri("/client/{id}", pathParas))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.delete()
 				.build();
@@ -153,26 +174,5 @@ public class DeviceClientImpl implements DeviceClient {
 	@Override
 	public void close() {
 
-	}
-
-	private String buildUri(String path, Map<String, Object> pathParams) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(clientConfig.getScheme());
-		sb.append("://");
-		sb.append(clientConfig.getHost());
-		sb.append(":");
-		sb.append(clientConfig.getPort());
-
-		if (pathParams == null || pathParams.isEmpty()) {
-			sb.append(path);
-		}
-		else {
-			for (Map.Entry<String, Object> entry : pathParams.entrySet()) {
-				path = path.replace("{" + entry.getKey() + "}", entry.getValue().toString());
-			}
-			sb.append(path);
-		}
-
-		return sb.toString();
 	}
 }

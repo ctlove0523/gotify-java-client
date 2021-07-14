@@ -1,6 +1,6 @@
 package io.github.ctlove0523.gotify;
 
-public class GotifyClientConfig implements InnerGotifyClientConfig {
+public class GotifyClientConfig {
 	private String scheme;
 	private String host;
 	private int port;
@@ -16,27 +16,22 @@ public class GotifyClientConfig implements InnerGotifyClientConfig {
 	}
 
 
-	@Override
 	public String getScheme() {
 		return scheme;
 	}
 
-	@Override
 	public String getHost() {
 		return host;
 	}
 
-	@Override
 	public int getPort() {
 		return port;
 	}
 
-	@Override
 	public String getUserName() {
 		return userName;
 	}
 
-	@Override
 	public String getPassword() {
 		return password;
 	}

@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,9 +19,9 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 class UserClientImpl implements UserClient {
-	private InnerGotifyClientConfig clientConfig;
+	private GotifyClientConfig clientConfig;
 
-	UserClientImpl(InnerGotifyClientConfig clientConfig) {
+	UserClientImpl(GotifyClientConfig clientConfig) {
 		this.clientConfig = clientConfig;
 	}
 
@@ -40,8 +38,13 @@ class UserClientImpl implements UserClient {
 		OkHttpClient client = new OkHttpClient.Builder()
 				.build();
 
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/current/user")
+				.build();
+
 		Request request = new Request.Builder()
-				.url(buildUri("/current/user", null))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.get()
 				.build();
@@ -76,8 +79,13 @@ class UserClientImpl implements UserClient {
 		RequestBody requestBody = RequestBody.create(JacksonUtil.object2String(updateCurrentUserPasswordRequest),
 				MediaType.get("application/json"));
 
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/current/user/password")
+				.build();
+
 		Request request = new Request.Builder()
-				.url(buildUri("/current/user/password", null))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.put(requestBody)
 				.build();
@@ -100,15 +108,19 @@ class UserClientImpl implements UserClient {
 		OkHttpClient client = new OkHttpClient.Builder()
 				.build();
 
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/user")
+				.build();
 		Request request = new Request.Builder()
-				.url(buildUri("/user", null))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.get()
 				.build();
 
 		try (Response response = client.newCall(request).execute();
 			 ResponseBody responseBody = response.body()) {
-			if (Objects.nonNull(responseBody)){
+			if (Objects.nonNull(responseBody)) {
 				String content = responseBody.string();
 
 				ObjectMapper mapper = new ObjectMapper();
@@ -134,8 +146,13 @@ class UserClientImpl implements UserClient {
 		RequestBody requestBody = RequestBody.create(JacksonUtil.object2String(user),
 				MediaType.get("application/json"));
 
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/user")
+				.build();
+
 		Request request = new Request.Builder()
-				.url(buildUri("/user", null))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.post(requestBody)
 				.build();
@@ -165,8 +182,13 @@ class UserClientImpl implements UserClient {
 		Map<String, Object> pathParas = new HashMap<>();
 		pathParas.put("id", id);
 
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/user/{id}")
+				.pathParams(pathParas)
+				.build();
 		Request request = new Request.Builder()
-				.url(buildUri("/user/{id}", pathParas))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.get()
 				.build();
@@ -196,8 +218,13 @@ class UserClientImpl implements UserClient {
 		RequestBody requestBody = RequestBody.create(JacksonUtil.object2String(user),
 				MediaType.get("application/json"));
 
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/user")
+				.build();
+
 		Request request = new Request.Builder()
-				.url(buildUri("/user", null))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.put(requestBody)
 				.build();
@@ -227,8 +254,13 @@ class UserClientImpl implements UserClient {
 		Map<String, Object> pathParas = new HashMap<>();
 		pathParas.put("id", id);
 
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/user/{id}")
+				.pathParams(pathParas)
+				.build();
 		Request request = new Request.Builder()
-				.url(buildUri("/user/{id}", pathParas))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.delete()
 				.build();
@@ -241,42 +273,5 @@ class UserClientImpl implements UserClient {
 		}
 
 		return false;
-	}
-
-	private String buildUri(String path, Map<String, Object> pathParams) {
-		return buildUri(path, pathParams, new HashMap<>());
-	}
-
-	private String buildUri(String path, Map<String, Object> pathParams, Map<String, Object> queryParams) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(clientConfig.getScheme());
-		sb.append("://");
-		sb.append(clientConfig.getHost());
-		sb.append(":");
-		sb.append(clientConfig.getPort());
-
-		if (pathParams == null || pathParams.isEmpty()) {
-			sb.append(path);
-		}
-		else {
-			for (Map.Entry<String, Object> entry : pathParams.entrySet()) {
-				path = path.replace("{" + entry.getKey() + "}", entry.getValue().toString());
-			}
-			sb.append(path);
-		}
-
-		if (queryParams != null && !queryParams.isEmpty()) {
-			List<String> queryString = new ArrayList<>(queryParams.size());
-			queryParams.forEach(new BiConsumer<String, Object>() {
-				@Override
-				public void accept(String s, Object o) {
-					queryString.add(s + "=" + o.toString());
-				}
-			});
-			sb.append("?");
-			sb.append(String.join("&", queryString));
-		}
-
-		return sb.toString();
 	}
 }

@@ -22,9 +22,9 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 class AppClientImpl implements AppClient {
-	private InnerGotifyClientConfig clientConfig;
+	private GotifyClientConfig clientConfig;
 
-	public AppClientImpl(InnerGotifyClientConfig clientConfig) {
+	public AppClientImpl(GotifyClientConfig clientConfig) {
 		this.clientConfig = clientConfig;
 	}
 
@@ -33,12 +33,17 @@ class AppClientImpl implements AppClient {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
-		OkHttpClient client = new OkHttpClient.Builder()
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/application")
 				.build();
 		Request request = new Request.Builder()
-				.url(buildUri("/application", null))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.get()
+				.build();
+
+		OkHttpClient client = new OkHttpClient.Builder()
 				.build();
 		try (Response response = client.newCall(request).execute();
 			 ResponseBody body = response.body()) {
@@ -68,8 +73,13 @@ class AppClientImpl implements AppClient {
 				.build();
 		RequestBody requestBody = RequestBody
 				.create(JacksonUtil.object2String(createApplicationRequest), MediaType.get("application/json"));
+
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/application")
+				.build();
 		Request request = new Request.Builder()
-				.url(buildUri("/application", null))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.post(requestBody)
 				.build();
@@ -102,8 +112,15 @@ class AppClientImpl implements AppClient {
 
 		Map<String, Object> pathPars = new HashMap<>();
 		pathPars.put("id", id);
+
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/application/{id}")
+				.pathParams(pathPars)
+				.build();
+
 		Request request = new Request.Builder()
-				.url(buildUri("/application/{id}", pathPars))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.put(requestBody)
 				.build();
@@ -133,8 +150,15 @@ class AppClientImpl implements AppClient {
 				.build();
 		Map<String, Object> pathPars = new HashMap<>();
 		pathPars.put("id", id);
+
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/application/{id}")
+				.pathParams(pathPars)
+				.build();
+
 		Request request = new Request.Builder()
-				.url(buildUri("/application/{id}", pathPars))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.delete()
 				.build();
@@ -162,8 +186,14 @@ class AppClientImpl implements AppClient {
 				.build();
 		Map<String, Object> pathPars = new HashMap<>();
 		pathPars.put("id", id);
+
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/application/{id}/image")
+				.pathParams(pathPars)
+				.build();
 		Request request = new Request.Builder()
-				.url(buildUri("/application/{id}/image", pathPars))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.post(requestBody)
 				.build();
@@ -187,25 +217,5 @@ class AppClientImpl implements AppClient {
 	@Override
 	public void close() {
 
-	}
-
-	private String buildUri(String path, Map<String, Object> pathParams) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(clientConfig.getScheme());
-		sb.append("://");
-		sb.append(clientConfig.getHost());
-		sb.append(":");
-		sb.append(clientConfig.getPort());
-
-		if (pathParams == null || pathParams.isEmpty()) {
-			sb.append(path);
-		}
-		else {
-			for (Map.Entry<String, Object> entry : pathParams.entrySet()) {
-				path = path.replace("{" + entry.getKey() + "}", entry.getValue().toString());
-			}
-		}
-
-		return sb.toString();
 	}
 }

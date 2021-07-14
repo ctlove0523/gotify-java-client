@@ -2,11 +2,9 @@ package io.github.ctlove0523.gotify;
 
 import java.io.IOException;
 import java.util.Base64;
-import java.util.Map;
 import java.util.Objects;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.ctlove0523.gotify.health.Health;
 import io.github.ctlove0523.gotify.version.GotifyVersion;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -14,9 +12,9 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 class VersionClientImpl implements VersionClient {
-	private InnerGotifyClientConfig config;
+	private GotifyClientConfig config;
 
-	VersionClientImpl(InnerGotifyClientConfig config) {
+	VersionClientImpl(GotifyClientConfig config) {
 		this.config = config;
 	}
 
@@ -27,8 +25,14 @@ class VersionClientImpl implements VersionClient {
 
 		OkHttpClient client = new OkHttpClient.Builder()
 				.build();
+
+		String url = UriBuilder.builder()
+				.config(config)
+				.path("/version")
+				.build();
+
 		Request request = new Request.Builder()
-				.url(buildUri("/version", null))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.get()
 				.build();
@@ -49,26 +53,6 @@ class VersionClientImpl implements VersionClient {
 		}
 
 		return null;
-	}
-
-	private String buildUri(String path, Map<String, Object> pathParams) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(config.getScheme());
-		sb.append("://");
-		sb.append(config.getHost());
-		sb.append(":");
-		sb.append(config.getPort());
-
-		if (pathParams == null || pathParams.isEmpty()) {
-			sb.append(path);
-		}
-		else {
-			for (Map.Entry<String, Object> entry : pathParams.entrySet()) {
-				path = path.replace("{" + entry.getKey() + "}", entry.getValue().toString());
-			}
-		}
-
-		return sb.toString();
 	}
 
 	@Override

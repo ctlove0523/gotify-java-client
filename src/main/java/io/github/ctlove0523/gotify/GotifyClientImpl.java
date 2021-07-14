@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 class GotifyClientImpl implements GotifyClient {
-	private InnerGotifyClientConfig clientConfig;
+	private GotifyClientConfig clientConfig;
 
 	private AtomicReference<AppClient> appClientRef = new AtomicReference<>();
 
@@ -19,7 +19,7 @@ class GotifyClientImpl implements GotifyClient {
 
 	private AtomicReference<UserClient> userClientRef = new AtomicReference<>();
 
-	public GotifyClientImpl(InnerGotifyClientConfig clientConfig) {
+	public GotifyClientImpl(GotifyClientConfig clientConfig) {
 		this.clientConfig = clientConfig;
 	}
 
@@ -54,7 +54,7 @@ class GotifyClientImpl implements GotifyClient {
 	}
 
 	private synchronized <T extends CloseableClient> T newClient(AtomicReference<T> reference,
-			Function<InnerGotifyClientConfig, T> factory) {
+			Function<GotifyClientConfig, T> factory) {
 		T client = reference.get();
 
 		if (Objects.isNull(client)) {

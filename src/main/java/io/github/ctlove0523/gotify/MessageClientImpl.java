@@ -2,13 +2,10 @@ package io.github.ctlove0523.gotify;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.ctlove0523.gotify.app.Application;
@@ -22,11 +19,11 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 class MessageClientImpl implements MessageClient {
-	private InnerGotifyClientConfig clientConfig;
+	private GotifyClientConfig clientConfig;
 
 	private GotifyClientWebSocketClient webSocketClient;
 
-	public MessageClientImpl(InnerGotifyClientConfig clientConfig) {
+	public MessageClientImpl(GotifyClientConfig clientConfig) {
 		this.clientConfig = clientConfig;
 
 		String uri = "ws://" + clientConfig.getHost() + ":" + clientConfig.getPort() + "/stream";
@@ -56,11 +53,20 @@ class MessageClientImpl implements MessageClient {
 		if (since != null) {
 			queryParas.put("since", since);
 		}
+
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/application/{id}/message")
+				.pathParams(pathParas)
+				.queryParams(queryParas)
+				.build();
+
 		Request request = new Request.Builder()
-				.url(buildUri("/application/{id}/message", pathParas, queryParas))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.get()
 				.build();
+
 		try (Response response = client.newCall(request).execute();
 			 ResponseBody body = response.body()) {
 
@@ -100,8 +106,13 @@ class MessageClientImpl implements MessageClient {
 		Map<String, Object> pathParas = new HashMap<>();
 		pathParas.put("id", appId);
 
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/application/{id}/message")
+				.pathParams(pathParas)
+				.build();
 		Request request = new Request.Builder()
-				.url(buildUri("/application/{id}/message", pathParas))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.delete()
 				.build();
@@ -142,8 +153,14 @@ class MessageClientImpl implements MessageClient {
 		if (since != null) {
 			queryParas.put("since", since);
 		}
+
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/message")
+				.queryParams(queryParas)
+				.build();
 		Request request = new Request.Builder()
-				.url(buildUri("/message", new HashMap<>(), queryParas))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.get()
 				.build();
@@ -179,8 +196,12 @@ class MessageClientImpl implements MessageClient {
 
 		RequestBody body = RequestBody.create(JacksonUtil.object2String(message), MediaType.get("application/json"));
 
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/message")
+				.build();
 		Request request = new Request.Builder()
-				.url(buildUri("/message", null))
+				.url(url)
 				.header("X-Gotify-Key", appToken)
 				.header("Content-Type", "application/json")
 				.post(body)
@@ -209,9 +230,13 @@ class MessageClientImpl implements MessageClient {
 		OkHttpClient client = new OkHttpClient.Builder()
 				.build();
 
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/message")
+				.build();
 
 		Request request = new Request.Builder()
-				.url(buildUri("/message", null))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.delete()
 				.build();
@@ -239,8 +264,14 @@ class MessageClientImpl implements MessageClient {
 		Map<String, Object> pathParas = new HashMap<>();
 		pathParas.put("id", id);
 
+		String url = UriBuilder.builder()
+				.config(clientConfig)
+				.path("/message/{id}")
+				.pathParams(pathParas)
+				.build();
+
 		Request request = new Request.Builder()
-				.url(buildUri("/message/{id}", pathParas))
+				.url(url)
 				.header("Authorization", "Basic " + authorization)
 				.delete()
 				.build();
@@ -260,43 +291,6 @@ class MessageClientImpl implements MessageClient {
 	public void registerMessageHandler(MessageHandler handler) {
 		Objects.requireNonNull(handler, "handler");
 		webSocketClient.addHandler(handler);
-	}
-
-	private String buildUri(String path, Map<String, Object> pathParams) {
-		return buildUri(path, pathParams, new HashMap<>());
-	}
-
-	private String buildUri(String path, Map<String, Object> pathParams, Map<String, Object> queryParams) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(clientConfig.getScheme());
-		sb.append("://");
-		sb.append(clientConfig.getHost());
-		sb.append(":");
-		sb.append(clientConfig.getPort());
-
-		if (pathParams == null || pathParams.isEmpty()) {
-			sb.append(path);
-		}
-		else {
-			for (Map.Entry<String, Object> entry : pathParams.entrySet()) {
-				path = path.replace("{" + entry.getKey() + "}", entry.getValue().toString());
-			}
-			sb.append(path);
-		}
-
-		if (queryParams != null && !queryParams.isEmpty()) {
-			List<String> queryString = new ArrayList<>(queryParams.size());
-			queryParams.forEach(new BiConsumer<String, Object>() {
-				@Override
-				public void accept(String s, Object o) {
-					queryString.add(s + "=" + o.toString());
-				}
-			});
-			sb.append("?");
-			sb.append(String.join("&", queryString));
-		}
-
-		return sb.toString();
 	}
 
 	@Override
