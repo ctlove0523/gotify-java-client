@@ -1,7 +1,6 @@
 package io.github.ctlove0523.gotify;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -10,10 +9,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.ctlove0523.gotify.app.Application;
-import io.github.ctlove0523.gotify.message.Message;
-import io.github.ctlove0523.gotify.message.PagedMessages;
+import io.github.ctlove0523.gotify.user.UpdateCurrentUserPasswordRequest;
+import io.github.ctlove0523.gotify.user.User;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -21,46 +20,32 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-class MessageClientImpl implements MessageClient {
+class UserClientImpl implements UserClient {
 	private InnerGotifyClientConfig clientConfig;
 
-	private GotifyClientWebSocketClient webSocketClient;
-
-	public MessageClientImpl(InnerGotifyClientConfig clientConfig) {
+	UserClientImpl(InnerGotifyClientConfig clientConfig) {
 		this.clientConfig = clientConfig;
-
-		String uri = "ws://" + clientConfig.getHost() + ":" + clientConfig.getPort() + "/stream";
-		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
-		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
-
-		this.webSocketClient = new GotifyClientWebSocketClient(URI.create(uri));
-		webSocketClient.addHeader("Authorization", "Basic " + authorization);
-		webSocketClient.connect();
 	}
 
+	@Override
+	public void close() {
+
+	}
 
 	@Override
-	public PagedMessages getAppMessages(Integer appId, Integer limit, Integer since) {
+	public User currentUser() {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
 		OkHttpClient client = new OkHttpClient.Builder()
 				.build();
-		Map<String, Object> pathParas = new HashMap<>();
-		pathParas.put("id", appId);
 
-		Map<String, Object> queryParas = new HashMap<>();
-		if (limit != null) {
-			queryParas.put("limit", limit);
-		}
-		if (since != null) {
-			queryParas.put("since", since);
-		}
 		Request request = new Request.Builder()
-				.url(buildUri("/application/{id}/message", pathParas, queryParas))
+				.url(buildUri("/current/user", null))
 				.header("Authorization", "Basic " + authorization)
 				.get()
 				.build();
+
 		try (Response response = client.newCall(request).execute();
 			 ResponseBody body = response.body()) {
 
@@ -69,7 +54,7 @@ class MessageClientImpl implements MessageClient {
 
 				ObjectMapper mapper = new ObjectMapper();
 
-				return mapper.readValue(content, PagedMessages.class);
+				return mapper.readValue(content, User.class);
 			}
 
 		}
@@ -81,34 +66,24 @@ class MessageClientImpl implements MessageClient {
 	}
 
 	@Override
-	public PagedMessages getAppMessages(Integer appId, Integer limit) {
-		return getAppMessages(appId, limit, null);
-	}
-
-	@Override
-	public PagedMessages getAppMessages(Integer appId) {
-		return getAppMessages(appId, 200, null);
-	}
-
-	@Override
-	public Boolean deleteAppMessages(Integer appId) {
+	public Boolean updateCurrentUserPassword(UpdateCurrentUserPasswordRequest updateCurrentUserPasswordRequest) {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
 		OkHttpClient client = new OkHttpClient.Builder()
 				.build();
-		Map<String, Object> pathParas = new HashMap<>();
-		pathParas.put("id", appId);
+
+		RequestBody requestBody = RequestBody.create(JacksonUtil.object2String(updateCurrentUserPasswordRequest),
+				MediaType.get("application/json"));
 
 		Request request = new Request.Builder()
-				.url(buildUri("/application/{id}/message", pathParas))
+				.url(buildUri("/current/user/password", null))
 				.header("Authorization", "Basic " + authorization)
-				.delete()
+				.put(requestBody)
 				.build();
+
 		try (Response response = client.newCall(request).execute()) {
-
 			return response.isSuccessful();
-
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -118,80 +93,58 @@ class MessageClientImpl implements MessageClient {
 	}
 
 	@Override
-	public PagedMessages getMessages() {
-		return getMessages(200, null);
-	}
-
-	@Override
-	public PagedMessages getMessages(Integer limit) {
-		return getMessages(limit, null);
-	}
-
-	@Override
-	public PagedMessages getMessages(Integer limit, Integer since) {
+	public Iterable<User> getUsers() {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
 		OkHttpClient client = new OkHttpClient.Builder()
 				.build();
 
-		Map<String, Object> queryParas = new HashMap<>();
-		if (limit != null) {
-			queryParas.put("limit", limit);
-		}
-		if (since != null) {
-			queryParas.put("since", since);
-		}
 		Request request = new Request.Builder()
-				.url(buildUri("/message", new HashMap<>(), queryParas))
+				.url(buildUri("/user", null))
 				.header("Authorization", "Basic " + authorization)
 				.get()
 				.build();
-		try (Response response = client.newCall(request).execute();
-			 ResponseBody body = response.body()) {
 
-			if (Objects.nonNull(body)) {
-				String content = body.string();
-
-				ObjectMapper mapper = new ObjectMapper();
-
-				return mapper.readValue(content, PagedMessages.class);
-			}
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	@Override
-	public Message createMessage(Integer appId, Message message) {
-		AppClient appClient = new AppClientImpl(clientConfig);
-		String appToken = "";
-		for (Application application : appClient.listApplication()) {
-			if (application.getId().equals(appId)) {
-				appToken = application.getToken();
-				break;
-			}
-		}
-
-		RequestBody body = RequestBody.create(JacksonUtil.object2String(message), MediaType.get("application/json"));
-
-		Request request = new Request.Builder()
-				.url(buildUri("/message", null))
-				.header("X-Gotify-Key", appToken)
-				.header("Content-Type", "application/json")
-				.post(body)
-				.build();
-
-		OkHttpClient client = new OkHttpClient.Builder()
-				.build();
 		try (Response response = client.newCall(request).execute();
 			 ResponseBody responseBody = response.body()) {
-			if (responseBody != null) {
-				return JacksonUtil.string2Object(responseBody.string(), Message.class);
+			if (Objects.nonNull(responseBody)){
+				String content = responseBody.string();
+
+				ObjectMapper mapper = new ObjectMapper();
+
+				return mapper.readValue(content, new TypeReference<Iterable<User>>() { });
+			}
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return new ArrayList<>();
+	}
+
+	@Override
+	public User createUser(User user) {
+		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
+		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
+
+		OkHttpClient client = new OkHttpClient.Builder()
+				.build();
+
+		RequestBody requestBody = RequestBody.create(JacksonUtil.object2String(user),
+				MediaType.get("application/json"));
+
+		Request request = new Request.Builder()
+				.url(buildUri("/user", null))
+				.header("Authorization", "Basic " + authorization)
+				.post(requestBody)
+				.build();
+
+		try (Response response = client.newCall(request).execute();
+			 ResponseBody responseBody = response.body()) {
+			if (Objects.nonNull(responseBody)) {
+				String content = responseBody.string();
+				return JacksonUtil.string2Object(content, User.class);
 			}
 		}
 		catch (IOException e) {
@@ -202,64 +155,92 @@ class MessageClientImpl implements MessageClient {
 	}
 
 	@Override
-	public Boolean deleteMessages() {
+	public User getUser(Integer id) {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
 		OkHttpClient client = new OkHttpClient.Builder()
 				.build();
-
-
-		Request request = new Request.Builder()
-				.url(buildUri("/message", null))
-				.header("Authorization", "Basic " + authorization)
-				.delete()
-				.build();
-		try (Response response = client.newCall(request).execute()) {
-
-			return response.isSuccessful();
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return false;
-	}
-
-	@Override
-	public Boolean deleteMessage(Integer id) {
-		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
-		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
-
-		OkHttpClient client = new OkHttpClient.Builder()
-				.build();
-
 
 		Map<String, Object> pathParas = new HashMap<>();
 		pathParas.put("id", id);
 
 		Request request = new Request.Builder()
-				.url(buildUri("/message/{id}", pathParas))
+				.url(buildUri("/user/{id}", pathParas))
+				.header("Authorization", "Basic " + authorization)
+				.get()
+				.build();
+
+		try (Response response = client.newCall(request).execute();
+			 ResponseBody responseBody = response.body()) {
+			if (Objects.nonNull(responseBody)) {
+				String content = responseBody.string();
+				return JacksonUtil.string2Object(content, User.class);
+			}
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	@Override
+	public User updateUser(User user) {
+		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
+		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
+
+		OkHttpClient client = new OkHttpClient.Builder()
+				.build();
+
+		RequestBody requestBody = RequestBody.create(JacksonUtil.object2String(user),
+				MediaType.get("application/json"));
+
+		Request request = new Request.Builder()
+				.url(buildUri("/user", null))
+				.header("Authorization", "Basic " + authorization)
+				.put(requestBody)
+				.build();
+
+		try (Response response = client.newCall(request).execute();
+			 ResponseBody responseBody = response.body()) {
+			if (Objects.nonNull(responseBody)) {
+				String content = responseBody.string();
+				return JacksonUtil.string2Object(content, User.class);
+			}
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	@Override
+	public Boolean deleteUser(Integer id) {
+		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
+		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
+
+		OkHttpClient client = new OkHttpClient.Builder()
+				.build();
+
+		Map<String, Object> pathParas = new HashMap<>();
+		pathParas.put("id", id);
+
+		Request request = new Request.Builder()
+				.url(buildUri("/user/{id}", pathParas))
 				.header("Authorization", "Basic " + authorization)
 				.delete()
 				.build();
+
 		try (Response response = client.newCall(request).execute()) {
-
 			return response.isSuccessful();
-
 		}
 		catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		return false;
-	}
-
-	@Override
-	public void registerMessageHandler(MessageHandler handler) {
-		Objects.requireNonNull(handler, "handler");
-		webSocketClient.addHandler(handler);
 	}
 
 	private String buildUri(String path, Map<String, Object> pathParams) {
@@ -297,10 +278,5 @@ class MessageClientImpl implements MessageClient {
 		}
 
 		return sb.toString();
-	}
-
-	@Override
-	public void close() {
-
 	}
 }

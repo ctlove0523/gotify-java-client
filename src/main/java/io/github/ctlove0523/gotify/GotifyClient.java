@@ -14,4 +14,6 @@ public interface GotifyClient {
 	HealthClient getHealthClient();
 
 	VersionClient getVersionClient();
+
+	UserClient getUserClient();
 }
