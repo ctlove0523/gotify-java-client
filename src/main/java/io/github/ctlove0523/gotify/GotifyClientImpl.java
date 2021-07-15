@@ -5,19 +5,19 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 class GotifyClientImpl implements GotifyClient {
-	private GotifyClientConfig clientConfig;
+	private final GotifyClientConfig clientConfig;
 
-	private AtomicReference<AppClient> appClientRef = new AtomicReference<>();
+	private final AtomicReference<AppClient> appClientRef = new AtomicReference<>();
 
-	private AtomicReference<MessageClient> messageClientRef = new AtomicReference<>();
+	private final AtomicReference<MessageClient> messageClientRef = new AtomicReference<>();
 
-	private AtomicReference<DeviceClient> deviceClientRef = new AtomicReference<>();
+	private final AtomicReference<DeviceClient> deviceClientRef = new AtomicReference<>();
 
-	private AtomicReference<HealthClient> healthClientRef = new AtomicReference<>();
+	private final AtomicReference<HealthClient> healthClientRef = new AtomicReference<>();
 
-	private AtomicReference<VersionClient> versionClientRef = new AtomicReference<>();
+	private final AtomicReference<VersionClient> versionClientRef = new AtomicReference<>();
 
-	private AtomicReference<UserClient> userClientRef = new AtomicReference<>();
+	private final AtomicReference<UserClient> userClientRef = new AtomicReference<>();
 
 	public GotifyClientImpl(GotifyClientConfig clientConfig) {
 		this.clientConfig = clientConfig;

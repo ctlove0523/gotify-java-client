@@ -1,18 +1,21 @@
 package io.github.ctlove0523.gotify;
 
+import java.util.List;
+
 import io.github.ctlove0523.gotify.app.Application;
 import io.github.ctlove0523.gotify.app.CreateApplicationRequest;
 import io.github.ctlove0523.gotify.app.UpdateApplictionRequest;
 
 public interface AppClient extends CloseableClient {
-	Iterable<Application> listApplication();
 
-	Application createApplication(CreateApplicationRequest createApplicationRequest);
+	Result<List<Application>, GotifyResponseError> getApplications();
 
-	Application updateApplication(int id, UpdateApplictionRequest updateApplictionRequest);
+	Result<Application, GotifyResponseError> createApplication(CreateApplicationRequest createApplicationRequest);
 
-	boolean deleteApplication(int id);
+	Result<Application, GotifyResponseError> updateApplication(int id, UpdateApplictionRequest updateApplictionRequest);
 
-	Application uploadApplicationImage(int id, byte[] image);
+	Result<Boolean, GotifyResponseError> deleteApplication(int id);
+
+	Result<Application, GotifyResponseError> uploadApplicationImage(int id, byte[] image);
 
 }

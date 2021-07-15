@@ -13,5 +13,5 @@ public class CreateApplicationRequest {
 	private String name;
 	private String description;
 	private String image;
-	private boolean internal;
+	private Boolean internal;
 }

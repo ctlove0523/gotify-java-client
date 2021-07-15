@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 class GotifyClientWebSocketClient extends WebSocketClient {
 	private static final Logger log = LoggerFactory.getLogger(GotifyClientWebSocketClient.class);
-	private List<MessageHandler> handlers = new ArrayList<>();
+	private final List<MessageHandler> handlers = new ArrayList<>();
 
 	public GotifyClientWebSocketClient(URI serverUri) {
 		super(serverUri);

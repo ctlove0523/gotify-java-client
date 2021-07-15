@@ -1,25 +1,19 @@
 package io.github.ctlove0523.gotify;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.ctlove0523.gotify.user.UpdateCurrentUserPasswordRequest;
 import io.github.ctlove0523.gotify.user.User;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 class UserClientImpl implements UserClient {
-	private GotifyClientConfig clientConfig;
+	private final GotifyClientConfig clientConfig;
 
 	UserClientImpl(GotifyClientConfig clientConfig) {
 		this.clientConfig = clientConfig;
@@ -31,7 +25,7 @@ class UserClientImpl implements UserClient {
 	}
 
 	@Override
-	public User currentUser() {
+	public Result<User, GotifyResponseError> currentUser() {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -49,27 +43,11 @@ class UserClientImpl implements UserClient {
 				.get()
 				.build();
 
-		try (Response response = client.newCall(request).execute();
-			 ResponseBody body = response.body()) {
-
-			if (Objects.nonNull(body)) {
-				String content = body.string();
-
-				ObjectMapper mapper = new ObjectMapper();
-
-				return mapper.readValue(content, User.class);
-			}
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return GotifyRequest.builder().client(client).request(request).execute(User.class);
 	}
 
 	@Override
-	public Boolean updateCurrentUserPassword(UpdateCurrentUserPasswordRequest updateCurrentUserPasswordRequest) {
+	public Result<Boolean, GotifyResponseError> updateCurrentUserPassword(UpdateCurrentUserPasswordRequest updateCurrentUserPasswordRequest) {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -90,18 +68,11 @@ class UserClientImpl implements UserClient {
 				.put(requestBody)
 				.build();
 
-		try (Response response = client.newCall(request).execute()) {
-			return response.isSuccessful();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return false;
+		return GotifyRequest.builder().client(client).request(request).execute(Boolean.class);
 	}
 
 	@Override
-	public Iterable<User> getUsers() {
+	public Result<List<User>, GotifyResponseError> getUsers() {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -118,25 +89,11 @@ class UserClientImpl implements UserClient {
 				.get()
 				.build();
 
-		try (Response response = client.newCall(request).execute();
-			 ResponseBody responseBody = response.body()) {
-			if (Objects.nonNull(responseBody)) {
-				String content = responseBody.string();
-
-				ObjectMapper mapper = new ObjectMapper();
-
-				return mapper.readValue(content, new TypeReference<Iterable<User>>() { });
-			}
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return new ArrayList<>();
+		return GotifyRequest.builder().client(client).request(request).executeReturnList(User.class);
 	}
 
 	@Override
-	public User createUser(User user) {
+	public Result<User, GotifyResponseError> createUser(User user) {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -157,22 +114,11 @@ class UserClientImpl implements UserClient {
 				.post(requestBody)
 				.build();
 
-		try (Response response = client.newCall(request).execute();
-			 ResponseBody responseBody = response.body()) {
-			if (Objects.nonNull(responseBody)) {
-				String content = responseBody.string();
-				return JacksonUtil.string2Object(content, User.class);
-			}
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return GotifyRequest.builder().client(client).request(request).execute(User.class);
 	}
 
 	@Override
-	public User getUser(Integer id) {
+	public Result<User, GotifyResponseError> getUser(Integer id) {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -193,22 +139,11 @@ class UserClientImpl implements UserClient {
 				.get()
 				.build();
 
-		try (Response response = client.newCall(request).execute();
-			 ResponseBody responseBody = response.body()) {
-			if (Objects.nonNull(responseBody)) {
-				String content = responseBody.string();
-				return JacksonUtil.string2Object(content, User.class);
-			}
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return GotifyRequest.builder().client(client).request(request).execute(User.class);
 	}
 
 	@Override
-	public User updateUser(User user) {
+	public Result<User, GotifyResponseError> updateUser(User user) {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -229,22 +164,11 @@ class UserClientImpl implements UserClient {
 				.put(requestBody)
 				.build();
 
-		try (Response response = client.newCall(request).execute();
-			 ResponseBody responseBody = response.body()) {
-			if (Objects.nonNull(responseBody)) {
-				String content = responseBody.string();
-				return JacksonUtil.string2Object(content, User.class);
-			}
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return GotifyRequest.builder().client(client).request(request).execute(User.class);
 	}
 
 	@Override
-	public Boolean deleteUser(Integer id) {
+	public Result<Boolean, GotifyResponseError> deleteUser(Integer id) {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -265,13 +189,6 @@ class UserClientImpl implements UserClient {
 				.delete()
 				.build();
 
-		try (Response response = client.newCall(request).execute()) {
-			return response.isSuccessful();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return false;
+		return GotifyRequest.builder().client(client).request(request).execute(Boolean.class);
 	}
 }

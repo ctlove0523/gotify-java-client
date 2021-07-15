@@ -1,13 +1,12 @@
 package io.github.ctlove0523.gotify;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.ctlove0523.gotify.app.Application;
 import io.github.ctlove0523.gotify.message.Message;
 import io.github.ctlove0523.gotify.message.PagedMessages;
@@ -15,13 +14,11 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 class MessageClientImpl implements MessageClient {
-	private GotifyClientConfig clientConfig;
+	private final GotifyClientConfig clientConfig;
 
-	private GotifyClientWebSocketClient webSocketClient;
+	private final GotifyClientWebSocketClient webSocketClient;
 
 	public MessageClientImpl(GotifyClientConfig clientConfig) {
 		this.clientConfig = clientConfig;
@@ -37,7 +34,7 @@ class MessageClientImpl implements MessageClient {
 
 
 	@Override
-	public PagedMessages getAppMessages(Integer appId, Integer limit, Integer since) {
+	public Result<PagedMessages, GotifyResponseError> getAppMessages(Integer appId, Integer limit, Integer since) {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -67,37 +64,21 @@ class MessageClientImpl implements MessageClient {
 				.get()
 				.build();
 
-		try (Response response = client.newCall(request).execute();
-			 ResponseBody body = response.body()) {
-
-			if (Objects.nonNull(body)) {
-				String content = body.string();
-
-				ObjectMapper mapper = new ObjectMapper();
-
-				return mapper.readValue(content, PagedMessages.class);
-			}
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return GotifyRequest.builder().client(client).request(request).execute(PagedMessages.class);
 	}
 
 	@Override
-	public PagedMessages getAppMessages(Integer appId, Integer limit) {
+	public Result<PagedMessages, GotifyResponseError> getAppMessages(Integer appId, Integer limit) {
 		return getAppMessages(appId, limit, null);
 	}
 
 	@Override
-	public PagedMessages getAppMessages(Integer appId) {
+	public Result<PagedMessages, GotifyResponseError> getAppMessages(Integer appId) {
 		return getAppMessages(appId, 200, null);
 	}
 
 	@Override
-	public Boolean deleteAppMessages(Integer appId) {
+	public Result<Boolean, GotifyResponseError> deleteAppMessages(Integer appId) {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -116,30 +97,21 @@ class MessageClientImpl implements MessageClient {
 				.header("Authorization", "Basic " + authorization)
 				.delete()
 				.build();
-		try (Response response = client.newCall(request).execute()) {
-
-			return response.isSuccessful();
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return false;
+		return GotifyRequest.builder().client(client).request(request).execute(Boolean.class);
 	}
 
 	@Override
-	public PagedMessages getMessages() {
+	public Result<PagedMessages, GotifyResponseError> getMessages() {
 		return getMessages(200, null);
 	}
 
 	@Override
-	public PagedMessages getMessages(Integer limit) {
+	public Result<PagedMessages, GotifyResponseError> getMessages(Integer limit) {
 		return getMessages(limit, null);
 	}
 
 	@Override
-	public PagedMessages getMessages(Integer limit, Integer since) {
+	public Result<PagedMessages, GotifyResponseError> getMessages(Integer limit, Integer since) {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -164,30 +136,18 @@ class MessageClientImpl implements MessageClient {
 				.header("Authorization", "Basic " + authorization)
 				.get()
 				.build();
-		try (Response response = client.newCall(request).execute();
-			 ResponseBody body = response.body()) {
-
-			if (Objects.nonNull(body)) {
-				String content = body.string();
-
-				ObjectMapper mapper = new ObjectMapper();
-
-				return mapper.readValue(content, PagedMessages.class);
-			}
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return GotifyRequest.builder().client(client).request(request).execute(PagedMessages.class);
 	}
 
 	@Override
-	public Message createMessage(Integer appId, Message message) {
+	public Result<Message, GotifyResponseError> createMessage(Integer appId, Message message) {
 		AppClient appClient = new AppClientImpl(clientConfig);
 		String appToken = "";
-		for (Application application : appClient.listApplication()) {
+		Result<List<Application>, GotifyResponseError> result = appClient.getApplications();
+		if (!result.isSuccessful()) {
+			return GotifyResult.error(new GotifyResponseError());
+		}
+		for (Application application : result.result()) {
 			if (application.getId().equals(appId)) {
 				appToken = application.getToken();
 				break;
@@ -209,21 +169,11 @@ class MessageClientImpl implements MessageClient {
 
 		OkHttpClient client = new OkHttpClient.Builder()
 				.build();
-		try (Response response = client.newCall(request).execute();
-			 ResponseBody responseBody = response.body()) {
-			if (responseBody != null) {
-				return JacksonUtil.string2Object(responseBody.string(), Message.class);
-			}
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return GotifyRequest.builder().client(client).request(request).execute(Message.class);
 	}
 
 	@Override
-	public Boolean deleteMessages() {
+	public Result<Boolean, GotifyResponseError> deleteMessages() {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -240,20 +190,11 @@ class MessageClientImpl implements MessageClient {
 				.header("Authorization", "Basic " + authorization)
 				.delete()
 				.build();
-		try (Response response = client.newCall(request).execute()) {
-
-			return response.isSuccessful();
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return false;
+		return GotifyRequest.builder().client(client).request(request).execute(Boolean.class);
 	}
 
 	@Override
-	public Boolean deleteMessage(Integer id) {
+	public Result<Boolean, GotifyResponseError> deleteMessage(Integer id) {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -275,16 +216,7 @@ class MessageClientImpl implements MessageClient {
 				.header("Authorization", "Basic " + authorization)
 				.delete()
 				.build();
-		try (Response response = client.newCall(request).execute()) {
-
-			return response.isSuccessful();
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return false;
+		return GotifyRequest.builder().client(client).request(request).execute(Boolean.class);
 	}
 
 	@Override

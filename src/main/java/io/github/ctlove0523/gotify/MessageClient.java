@@ -4,25 +4,25 @@ import io.github.ctlove0523.gotify.message.Message;
 import io.github.ctlove0523.gotify.message.PagedMessages;
 
 public interface MessageClient extends CloseableClient {
-	PagedMessages getAppMessages(Integer appId, Integer limit, Integer since);
+	Result<PagedMessages, GotifyResponseError> getAppMessages(Integer appId, Integer limit, Integer since);
 
-	PagedMessages getAppMessages(Integer appId, Integer limit);
+	Result<PagedMessages, GotifyResponseError> getAppMessages(Integer appId, Integer limit);
 
-	PagedMessages getAppMessages(Integer appId);
+	Result<PagedMessages, GotifyResponseError> getAppMessages(Integer appId);
 
-	Boolean deleteAppMessages(Integer appId);
+	Result<Boolean, GotifyResponseError> deleteAppMessages(Integer appId);
 
-	PagedMessages getMessages();
+	Result<PagedMessages, GotifyResponseError> getMessages();
 
-	PagedMessages getMessages(Integer limit);
+	Result<PagedMessages, GotifyResponseError> getMessages(Integer limit);
 
-	PagedMessages getMessages(Integer limit, Integer since);
+	Result<PagedMessages, GotifyResponseError> getMessages(Integer limit, Integer since);
 
-	Message createMessage(Integer appId, Message message);
+	Result<Message, GotifyResponseError> createMessage(Integer appId, Message message);
 
-	Boolean deleteMessages();
+	Result<Boolean, GotifyResponseError> deleteMessages();
 
-	Boolean deleteMessage(Integer id);
+	Result<Boolean, GotifyResponseError> deleteMessage(Integer id);
 
 	void registerMessageHandler(MessageHandler handler);
 }

@@ -14,5 +14,5 @@ public class Application {
 	private String description;
 	private String image;
 	private String token;
-	private boolean internal;
+	private Boolean internal;
 }

@@ -1,5 +1,7 @@
 package io.github.ctlove0523.gotify;
 
+import java.util.List;
+
 import io.github.ctlove0523.gotify.device.Client;
 
 /**
@@ -7,11 +9,11 @@ import io.github.ctlove0523.gotify.device.Client;
  */
 public interface DeviceClient extends CloseableClient {
 
-	Iterable<Client> getClients();
+	Result<List<Client>, GotifyResponseError> getClients();
 
-	Client createClient(Client client);
+	Result<Client, GotifyResponseError> createClient(Client client);
 
-	Client updateClient(Integer id, Client client);
+	Result<Client, GotifyResponseError> updateClient(Integer id, Client client);
 
-	Boolean deleteClient(Integer id);
+	Result<Boolean, GotifyResponseError> deleteClient(Integer id);
 }

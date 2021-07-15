@@ -1,32 +1,25 @@
 package io.github.ctlove0523.gotify;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.ctlove0523.gotify.device.Client;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class DeviceClientImpl implements DeviceClient {
-	private GotifyClientConfig clientConfig;
+	private final GotifyClientConfig clientConfig;
 
 	DeviceClientImpl(GotifyClientConfig clientConfig) {
 		this.clientConfig = clientConfig;
 	}
 
 	@Override
-	public Iterable<Client> getClients() {
+	public Result<List<Client>, GotifyResponseError> getClients() {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -41,27 +34,11 @@ public class DeviceClientImpl implements DeviceClient {
 				.header("Authorization", "Basic " + authorization)
 				.get()
 				.build();
-		try (Response response = client.newCall(request).execute();
-			 ResponseBody body = response.body()) {
-
-			if (Objects.nonNull(body)) {
-				String content = body.string();
-
-				ObjectMapper mapper = new ObjectMapper();
-
-				return mapper.readValue(content, new TypeReference<List<Client>>() { });
-			}
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return new ArrayList<>();
+		return GotifyRequest.builder().client(client).request(request).executeReturnList(Client.class);
 	}
 
 	@Override
-	public Client createClient(Client client) {
+	public Result<Client, GotifyResponseError> createClient(Client client) {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -79,27 +56,11 @@ public class DeviceClientImpl implements DeviceClient {
 				.header("Authorization", "Basic " + authorization)
 				.post(requestBody)
 				.build();
-		try (Response response = okHttpClient.newCall(request).execute();
-			 ResponseBody body = response.body()) {
-
-			if (Objects.nonNull(body)) {
-				String content = body.string();
-
-				ObjectMapper mapper = new ObjectMapper();
-
-				return mapper.readValue(content, Client.class);
-			}
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return GotifyRequest.builder().client(okHttpClient).request(request).execute(Client.class);
 	}
 
 	@Override
-	public Client updateClient(Integer id, Client client) {
+	public Result<Client, GotifyResponseError> updateClient(Integer id, Client client) {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -120,28 +81,11 @@ public class DeviceClientImpl implements DeviceClient {
 				.header("Authorization", "Basic " + authorization)
 				.put(requestBody)
 				.build();
-		try (Response response = okHttpClient.newCall(request).execute();
-			 ResponseBody body = response.body()) {
-
-			if (Objects.nonNull(body)) {
-				String content = body.string();
-				System.out.println(content);
-
-				ObjectMapper mapper = new ObjectMapper();
-
-				return mapper.readValue(content, Client.class);
-			}
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return GotifyRequest.builder().client(okHttpClient).request(request).execute(Client.class);
 	}
 
 	@Override
-	public Boolean deleteClient(Integer id) {
+	public Result<Boolean, GotifyResponseError> deleteClient(Integer id) {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -160,15 +104,7 @@ public class DeviceClientImpl implements DeviceClient {
 				.header("Authorization", "Basic " + authorization)
 				.delete()
 				.build();
-		try (Response response = okHttpClient.newCall(request).execute()) {
-			return response.isSuccessful();
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return false;
+		return GotifyRequest.builder().client(okHttpClient).request(request).execute(Boolean.class);
 	}
 
 	@Override

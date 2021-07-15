@@ -1,15 +1,10 @@
 package io.github.ctlove0523.gotify;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.ctlove0523.gotify.app.Application;
 import io.github.ctlove0523.gotify.app.CreateApplicationRequest;
 import io.github.ctlove0523.gotify.app.UpdateApplictionRequest;
@@ -18,18 +13,16 @@ import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 class AppClientImpl implements AppClient {
-	private GotifyClientConfig clientConfig;
+	private final GotifyClientConfig clientConfig;
 
 	public AppClientImpl(GotifyClientConfig clientConfig) {
 		this.clientConfig = clientConfig;
 	}
 
 	@Override
-	public Iterable<Application> listApplication() {
+	public Result<List<Application>, GotifyResponseError> getApplications() {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -45,27 +38,12 @@ class AppClientImpl implements AppClient {
 
 		OkHttpClient client = new OkHttpClient.Builder()
 				.build();
-		try (Response response = client.newCall(request).execute();
-			 ResponseBody body = response.body()) {
 
-			if (Objects.nonNull(body)) {
-				String content = body.string();
-
-				ObjectMapper mapper = new ObjectMapper();
-
-				return mapper.readValue(content, new TypeReference<List<Application>>() { });
-			}
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return new ArrayList<>();
+		return GotifyRequest.builder().client(client).request(request).executeReturnList(Application.class);
 	}
 
 	@Override
-	public Application createApplication(CreateApplicationRequest createApplicationRequest) {
+	public Result<Application, GotifyResponseError> createApplication(CreateApplicationRequest createApplicationRequest) {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -83,25 +61,11 @@ class AppClientImpl implements AppClient {
 				.header("Authorization", "Basic " + authorization)
 				.post(requestBody)
 				.build();
-		try (Response response = client.newCall(request).execute();
-			 ResponseBody body = response.body()) {
-
-			if (Objects.nonNull(body)) {
-				String content = body.string();
-
-				return JacksonUtil.string2Object(content, Application.class);
-			}
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return GotifyRequest.builder().client(client).request(request).execute(Application.class);
 	}
 
 	@Override
-	public Application updateApplication(int id, UpdateApplictionRequest updateApplictionRequest) {
+	public Result<Application, GotifyResponseError> updateApplication(int id, UpdateApplictionRequest updateApplictionRequest) {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -124,25 +88,11 @@ class AppClientImpl implements AppClient {
 				.header("Authorization", "Basic " + authorization)
 				.put(requestBody)
 				.build();
-		try (Response response = client.newCall(request).execute();
-			 ResponseBody body = response.body()) {
-
-			if (Objects.nonNull(body)) {
-				String content = body.string();
-
-				return JacksonUtil.string2Object(content, Application.class);
-			}
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return GotifyRequest.builder().client(client).request(request).execute(Application.class);
 	}
 
 	@Override
-	public boolean deleteApplication(int id) {
+	public Result<Boolean, GotifyResponseError> deleteApplication(int id) {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -162,18 +112,11 @@ class AppClientImpl implements AppClient {
 				.header("Authorization", "Basic " + authorization)
 				.delete()
 				.build();
-		try (Response response = client.newCall(request).execute()) {
-			return response.isSuccessful();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return false;
+		return GotifyRequest.builder().client(client).request(request).execute(Boolean.class);
 	}
 
 	@Override
-	public Application uploadApplicationImage(int id, byte[] image) {
+	public Result<Application, GotifyResponseError> uploadApplicationImage(int id, byte[] image) {
 		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -197,21 +140,8 @@ class AppClientImpl implements AppClient {
 				.header("Authorization", "Basic " + authorization)
 				.post(requestBody)
 				.build();
-		try (Response response = client.newCall(request).execute();
-			 ResponseBody body = response.body()) {
 
-			if (Objects.nonNull(body)) {
-				String content = body.string();
-
-				return JacksonUtil.string2Object(content, Application.class);
-			}
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return GotifyRequest.builder().client(client).request(request).execute(Application.class);
 	}
 
 	@Override

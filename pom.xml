@@ -42,6 +42,12 @@
 			<artifactId>Java-WebSocket</artifactId>
 			<version>1.5.1</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>mockwebserver</artifactId>
+			<version>4.6.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

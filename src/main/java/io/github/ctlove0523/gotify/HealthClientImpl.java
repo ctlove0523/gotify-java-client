@@ -1,25 +1,20 @@
 package io.github.ctlove0523.gotify;
 
-import java.io.IOException;
 import java.util.Base64;
-import java.util.Objects;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.ctlove0523.gotify.health.Health;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 class HealthClientImpl implements HealthClient {
-	private GotifyClientConfig config;
+	private final GotifyClientConfig config;
 
 	public HealthClientImpl(GotifyClientConfig config) {
 		this.config = config;
 	}
 
 	@Override
-	public Health getHealth() {
+	public Result<Health, GotifyResponseError> getHealth() {
 		String authInfo = config.getUserName() + ":" + config.getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
@@ -35,23 +30,7 @@ class HealthClientImpl implements HealthClient {
 				.header("Authorization", "Basic " + authorization)
 				.get()
 				.build();
-		try (Response response = client.newCall(request).execute();
-			 ResponseBody body = response.body()) {
-
-			if (Objects.nonNull(body)) {
-				String content = body.string();
-
-				ObjectMapper mapper = new ObjectMapper();
-
-				return mapper.readValue(content, Health.class);
-			}
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+		return GotifyRequest.builder().client(client).request(request).execute(Health.class);
 	}
 
 

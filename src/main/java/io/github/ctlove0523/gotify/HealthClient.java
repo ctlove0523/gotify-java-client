@@ -7,5 +7,5 @@ import io.github.ctlove0523.gotify.health.Health;
  */
 public interface HealthClient extends CloseableClient {
 
-	Health getHealth();
+	Result<Health, GotifyResponseError> getHealth();
 }

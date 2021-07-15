@@ -1,11 +1,11 @@
 package io.github.ctlove0523.gotify;
 
 public class GotifyClientConfig {
-	private String scheme;
-	private String host;
-	private int port;
-	private String userName;
-	private String password;
+	private final String scheme;
+	private final String host;
+	private final int port;
+	private final String userName;
+	private final String password;
 
 	public GotifyClientConfig(Builder builder) {
 		this.scheme = builder.scheme;
