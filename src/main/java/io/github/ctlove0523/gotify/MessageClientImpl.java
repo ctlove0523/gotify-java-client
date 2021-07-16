@@ -11,7 +11,6 @@ import io.github.ctlove0523.gotify.app.Application;
 import io.github.ctlove0523.gotify.message.Message;
 import io.github.ctlove0523.gotify.message.PagedMessages;
 import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
@@ -35,9 +34,6 @@ class MessageClientImpl implements MessageClient {
 
 	@Override
 	public Result<PagedMessages, GotifyResponseError> getAppMessages(Integer appId, Integer limit, Integer since) {
-
-		OkHttpClient client = new OkHttpClient.Builder()
-				.build();
 		Map<String, Object> pathParas = new HashMap<>();
 		pathParas.put("id", appId);
 
@@ -80,9 +76,6 @@ class MessageClientImpl implements MessageClient {
 
 	@Override
 	public Result<Boolean, GotifyResponseError> deleteAppMessages(Integer appId) {
-
-		OkHttpClient client = new OkHttpClient.Builder()
-				.build();
 		Map<String, Object> pathParas = new HashMap<>();
 		pathParas.put("id", appId);
 
@@ -166,8 +159,6 @@ class MessageClientImpl implements MessageClient {
 				.post(body)
 				.build();
 
-		OkHttpClient client = new OkHttpClient.Builder()
-				.build();
 		return new GotifyRequest.Builder()
 				.request(request)
 				.clientAuthInfoWriter(ClientAuthInfoWriterFactory.writer(clientConfig.getCredential()))
@@ -177,10 +168,6 @@ class MessageClientImpl implements MessageClient {
 
 	@Override
 	public Result<Boolean, GotifyResponseError> deleteMessages() {
-
-		OkHttpClient client = new OkHttpClient.Builder()
-				.build();
-
 		String url = UriBuilder.builder()
 				.config(clientConfig)
 				.path("/message")
@@ -223,10 +210,5 @@ class MessageClientImpl implements MessageClient {
 	public void registerMessageHandler(MessageHandler handler) {
 		Objects.requireNonNull(handler, "handler");
 		webSocketClient.addHandler(handler);
-	}
-
-	@Override
-	public void close() {
-
 	}
 }

@@ -28,9 +28,4 @@ class VersionClientImpl implements VersionClient {
 				.build()
 				.execute(GotifyVersion.class);
 	}
-
-	@Override
-	public void close() {
-
-	}
 }

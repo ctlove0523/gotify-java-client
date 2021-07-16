@@ -99,9 +99,4 @@ public class DeviceClientImpl implements DeviceClient {
 				.build()
 				.execute(Boolean.class);
 	}
-
-	@Override
-	public void close() {
-
-	}
 }

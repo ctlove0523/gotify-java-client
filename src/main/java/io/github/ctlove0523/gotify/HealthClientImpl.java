@@ -26,10 +26,4 @@ class HealthClientImpl implements HealthClient {
 				.build()
 				.execute(Health.class);
 	}
-
-
-	@Override
-	public void close() {
-
-	}
 }

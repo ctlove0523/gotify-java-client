@@ -9,7 +9,6 @@ import io.github.ctlove0523.gotify.app.CreateApplicationRequest;
 import io.github.ctlove0523.gotify.app.UpdateApplictionRequest;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
@@ -31,8 +30,6 @@ class AppClientImpl implements AppClient {
 				.get()
 				.build();
 
-		OkHttpClient client = new OkHttpClient.Builder()
-				.build();
 		return new GotifyRequest.Builder()
 				.request(request)
 				.clientAuthInfoWriter(ClientAuthInfoWriterFactory.writer(clientConfig.getCredential()))
@@ -132,10 +129,5 @@ class AppClientImpl implements AppClient {
 				.clientAuthInfoWriter(ClientAuthInfoWriterFactory.writer(clientConfig.getCredential()))
 				.build()
 				.execute(Application.class);
-	}
-
-	@Override
-	public void close() {
-
 	}
 }
