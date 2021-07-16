@@ -24,7 +24,7 @@ class MessageClientImpl implements MessageClient {
 		this.clientConfig = clientConfig;
 
 		String uri = "ws://" + clientConfig.getHost() + ":" + clientConfig.getPort() + "/stream";
-		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
+		String authInfo = clientConfig.getCredential().getUserName() + ":" + clientConfig.getCredential().getPassword();
 		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
 		this.webSocketClient = new GotifyClientWebSocketClient(URI.create(uri));
@@ -35,8 +35,6 @@ class MessageClientImpl implements MessageClient {
 
 	@Override
 	public Result<PagedMessages, GotifyResponseError> getAppMessages(Integer appId, Integer limit, Integer since) {
-		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
-		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
 		OkHttpClient client = new OkHttpClient.Builder()
 				.build();
@@ -60,11 +58,14 @@ class MessageClientImpl implements MessageClient {
 
 		Request request = new Request.Builder()
 				.url(url)
-				.header("Authorization", "Basic " + authorization)
 				.get()
 				.build();
 
-		return GotifyRequest.builder().client(client).request(request).execute(PagedMessages.class);
+		return new GotifyRequest.Builder()
+				.request(request)
+				.clientAuthInfoWriter(ClientAuthInfoWriterFactory.writer(clientConfig.getCredential()))
+				.build()
+				.execute(PagedMessages.class);
 	}
 
 	@Override
@@ -79,8 +80,6 @@ class MessageClientImpl implements MessageClient {
 
 	@Override
 	public Result<Boolean, GotifyResponseError> deleteAppMessages(Integer appId) {
-		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
-		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
 		OkHttpClient client = new OkHttpClient.Builder()
 				.build();
@@ -94,10 +93,13 @@ class MessageClientImpl implements MessageClient {
 				.build();
 		Request request = new Request.Builder()
 				.url(url)
-				.header("Authorization", "Basic " + authorization)
 				.delete()
 				.build();
-		return GotifyRequest.builder().client(client).request(request).execute(Boolean.class);
+		return new GotifyRequest.Builder()
+				.request(request)
+				.clientAuthInfoWriter(ClientAuthInfoWriterFactory.writer(clientConfig.getCredential()))
+				.build()
+				.execute(Boolean.class);
 	}
 
 	@Override
@@ -112,12 +114,6 @@ class MessageClientImpl implements MessageClient {
 
 	@Override
 	public Result<PagedMessages, GotifyResponseError> getMessages(Integer limit, Integer since) {
-		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
-		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
-
-		OkHttpClient client = new OkHttpClient.Builder()
-				.build();
-
 		Map<String, Object> queryParas = new HashMap<>();
 		if (limit != null) {
 			queryParas.put("limit", limit);
@@ -133,10 +129,13 @@ class MessageClientImpl implements MessageClient {
 				.build();
 		Request request = new Request.Builder()
 				.url(url)
-				.header("Authorization", "Basic " + authorization)
 				.get()
 				.build();
-		return GotifyRequest.builder().client(client).request(request).execute(PagedMessages.class);
+		return new GotifyRequest.Builder()
+				.request(request)
+				.clientAuthInfoWriter(ClientAuthInfoWriterFactory.writer(clientConfig.getCredential()))
+				.build()
+				.execute(PagedMessages.class);
 	}
 
 	@Override
@@ -169,13 +168,15 @@ class MessageClientImpl implements MessageClient {
 
 		OkHttpClient client = new OkHttpClient.Builder()
 				.build();
-		return GotifyRequest.builder().client(client).request(request).execute(Message.class);
+		return new GotifyRequest.Builder()
+				.request(request)
+				.clientAuthInfoWriter(ClientAuthInfoWriterFactory.writer(clientConfig.getCredential()))
+				.build()
+				.execute(Message.class);
 	}
 
 	@Override
 	public Result<Boolean, GotifyResponseError> deleteMessages() {
-		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
-		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
 		OkHttpClient client = new OkHttpClient.Builder()
 				.build();
@@ -187,21 +188,17 @@ class MessageClientImpl implements MessageClient {
 
 		Request request = new Request.Builder()
 				.url(url)
-				.header("Authorization", "Basic " + authorization)
 				.delete()
 				.build();
-		return GotifyRequest.builder().client(client).request(request).execute(Boolean.class);
+		return new GotifyRequest.Builder()
+				.request(request)
+				.clientAuthInfoWriter(ClientAuthInfoWriterFactory.writer(clientConfig.getCredential()))
+				.build()
+				.execute(Boolean.class);
 	}
 
 	@Override
 	public Result<Boolean, GotifyResponseError> deleteMessage(Integer id) {
-		String authInfo = clientConfig.getUserName() + ":" + clientConfig.getPassword();
-		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
-
-		OkHttpClient client = new OkHttpClient.Builder()
-				.build();
-
-
 		Map<String, Object> pathParas = new HashMap<>();
 		pathParas.put("id", id);
 
@@ -213,10 +210,13 @@ class MessageClientImpl implements MessageClient {
 
 		Request request = new Request.Builder()
 				.url(url)
-				.header("Authorization", "Basic " + authorization)
 				.delete()
 				.build();
-		return GotifyRequest.builder().client(client).request(request).execute(Boolean.class);
+
+		return new GotifyRequest.Builder()
+				.request(request)
+				.clientAuthInfoWriter(ClientAuthInfoWriterFactory.writer(clientConfig.getCredential()))
+				.build().execute(Boolean.class);
 	}
 
 	@Override

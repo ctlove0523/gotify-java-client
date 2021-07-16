@@ -4,15 +4,13 @@ public class GotifyClientConfig {
 	private final String scheme;
 	private final String host;
 	private final int port;
-	private final String userName;
-	private final String password;
+	private final Credential credential;
 
-	public GotifyClientConfig(Builder builder) {
+	GotifyClientConfig(Builder builder) {
 		this.scheme = builder.scheme;
 		this.host = builder.host;
 		this.port = builder.port;
-		this.userName = builder.userName;
-		this.password = builder.password;
+		this.credential = builder.credential;
 	}
 
 
@@ -28,21 +26,15 @@ public class GotifyClientConfig {
 		return port;
 	}
 
-	public String getUserName() {
-		return userName;
+	Credential getCredential() {
+		return credential;
 	}
-
-	public String getPassword() {
-		return password;
-	}
-
 
 	public static class Builder {
 		private String scheme;
 		private String host;
 		private int port;
-		private String userName;
-		private String password;
+		private Credential credential;
 
 		public Builder builder() {
 			return new Builder();
@@ -63,13 +55,8 @@ public class GotifyClientConfig {
 			return this;
 		}
 
-		public Builder userName(String userName) {
-			this.userName = userName;
-			return this;
-		}
-
-		public Builder password(String password) {
-			this.password = password;
+		public Builder credential(Credential credential) {
+			this.credential = credential;
 			return this;
 		}
 

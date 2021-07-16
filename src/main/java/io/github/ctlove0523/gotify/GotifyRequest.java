@@ -15,20 +15,18 @@ public class GotifyRequest {
 
 	private Request request;
 
-	public static GotifyRequest builder() {
-		return new GotifyRequest();
+	GotifyRequest(Builder builder) {
+		this.client = builder.client;
+		this.request = builder.request;
 	}
 
-	public GotifyRequest client(OkHttpClient client) {
-		this.client = client;
-		return this;
+	Request getRequest() {
+		return request;
 	}
 
-	public GotifyRequest request(Request request) {
-		this.request = request;
-		return this;
+	public Builder newBuilder() {
+		return new Builder(this);
 	}
-
 
 	public <T, E> Result<T, GotifyResponseError> execute(Class<T> clazz) {
 		try (Response response = client.newCall(request).execute();
@@ -77,6 +75,47 @@ public class GotifyRequest {
 		catch (IOException e) {
 
 			return GotifyResult.exception(e);
+		}
+
+	}
+
+	public static class Builder {
+		private OkHttpClient client;
+
+		private Request request;
+
+		private ClientAuthInfoWriter writer;
+
+		public Builder() {
+
+		}
+
+		public Builder(GotifyRequest request) {
+			this.client = request.client;
+			this.request = request.request;
+		}
+
+		public Builder request(Request request) {
+			this.request = request;
+			return this;
+		}
+
+		public Builder clientAuthInfoWriter(ClientAuthInfoWriter writer) {
+			this.writer = writer;
+			return this;
+		}
+
+		public GotifyRequest build() {
+			if (client == null) {
+				this.client = HttpClientFactory.getHttpClient();
+			}
+
+			GotifyRequest request = new GotifyRequest(this);
+			if (writer != null) {
+				return writer.authenticateRequest(request);
+			}
+
+			return request;
 		}
 
 	}

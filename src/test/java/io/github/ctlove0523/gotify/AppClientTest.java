@@ -31,10 +31,15 @@ public class AppClientTest {
 
 		server.addApplication(application);
 
+		Credential credential = new BasicCredential.Builder()
+				.userName("admin")
+				.password("admin")
+				.build();
 		GotifyClientConfig config = new GotifyClientConfig.Builder()
 				.scheme("http")
 				.host("localhost")
 				.port(server.port())
+				.credential(credential)
 				.build();
 		GotifyClient gotifyClient = GotifyClient.build(config);
 
@@ -56,16 +61,22 @@ public class AppClientTest {
 		request.setInternal(true);
 		request.setImage("image");
 
+		Credential credential = new BasicCredential.Builder()
+				.userName("admin")
+				.password("admin")
+				.build();
+
 		GotifyClientConfig config = new GotifyClientConfig.Builder()
 				.scheme("http")
 				.host("localhost")
 				.port(server.port())
+				.credential(credential)
 				.build();
 		GotifyClient gotifyClient = GotifyClient.build(config);
 
 		AppClient appClient = gotifyClient.getAppClient();
 
-		Result<Application,GotifyResponseError> result = appClient.createApplication(request);
+		Result<Application, GotifyResponseError> result = appClient.createApplication(request);
 
 		Assert.assertTrue(result.isSuccessful());
 

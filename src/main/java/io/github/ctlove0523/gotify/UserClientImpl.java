@@ -43,7 +43,12 @@ class UserClientImpl implements UserClient {
 				.get()
 				.build();
 
-		return GotifyRequest.builder().client(client).request(request).execute(User.class);
+		return new GotifyRequest.Builder()
+				.client(client)
+				.request(request)
+				.clientAuthInfoWriter(ClientAuthInfoWriterFactory.writer(clientConfig.getCredential()))
+				.build()
+				.execute(User.class);
 	}
 
 	@Override
@@ -68,7 +73,12 @@ class UserClientImpl implements UserClient {
 				.put(requestBody)
 				.build();
 
-		return GotifyRequest.builder().client(client).request(request).execute(Boolean.class);
+		return new GotifyRequest.Builder()
+				.client(client)
+				.request(request)
+				.clientAuthInfoWriter(ClientAuthInfoWriterFactory.writer(clientConfig.getCredential()))
+				.build()
+				.execute(Boolean.class);
 	}
 
 	@Override
@@ -89,7 +99,12 @@ class UserClientImpl implements UserClient {
 				.get()
 				.build();
 
-		return GotifyRequest.builder().client(client).request(request).executeReturnList(User.class);
+		return new GotifyRequest.Builder()
+				.client(client)
+				.request(request)
+				.clientAuthInfoWriter(ClientAuthInfoWriterFactory.writer(clientConfig.getCredential()))
+				.build()
+				.executeReturnList(User.class);
 	}
 
 	@Override
@@ -114,7 +129,12 @@ class UserClientImpl implements UserClient {
 				.post(requestBody)
 				.build();
 
-		return GotifyRequest.builder().client(client).request(request).execute(User.class);
+		return new GotifyRequest.Builder()
+				.client(client)
+				.request(request)
+				.clientAuthInfoWriter(ClientAuthInfoWriterFactory.writer(clientConfig.getCredential()))
+				.build()
+				.execute(User.class);
 	}
 
 	@Override
@@ -138,8 +158,12 @@ class UserClientImpl implements UserClient {
 				.header("Authorization", "Basic " + authorization)
 				.get()
 				.build();
-
-		return GotifyRequest.builder().client(client).request(request).execute(User.class);
+		return new GotifyRequest.Builder()
+				.client(client)
+				.request(request)
+				.clientAuthInfoWriter(ClientAuthInfoWriterFactory.writer(clientConfig.getCredential()))
+				.build()
+				.execute(User.class);
 	}
 
 	@Override
@@ -163,8 +187,12 @@ class UserClientImpl implements UserClient {
 				.header("Authorization", "Basic " + authorization)
 				.put(requestBody)
 				.build();
-
-		return GotifyRequest.builder().client(client).request(request).execute(User.class);
+		return new GotifyRequest.Builder()
+				.client(client)
+				.request(request)
+				.clientAuthInfoWriter(ClientAuthInfoWriterFactory.writer(clientConfig.getCredential()))
+				.build()
+				.execute(User.class);
 	}
 
 	@Override
@@ -189,6 +217,11 @@ class UserClientImpl implements UserClient {
 				.delete()
 				.build();
 
-		return GotifyRequest.builder().client(client).request(request).execute(Boolean.class);
+		return new GotifyRequest.Builder()
+				.client(client)
+				.request(request)
+				.clientAuthInfoWriter(ClientAuthInfoWriterFactory.writer(clientConfig.getCredential()))
+				.build()
+				.execute(Boolean.class);
 	}
 }
