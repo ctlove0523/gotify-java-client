@@ -89,4 +89,4 @@ If you want to raise an issue, please follow the recommendations below:
 
 ## License
 
-Reactor Netty is Open Source Software released under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+Reactor Netty is Open Source Software released under the MIT License.
