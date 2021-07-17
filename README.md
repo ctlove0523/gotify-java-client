@@ -1,6 +1,6 @@
 # gotify-java-client
 
-`gotify-java-client` is sync client of [Gotify]() which written in Java.`gotify-java-client` can be used in Java or Android application.
+`gotify-java-client` is sync client of [Gotify](https://gotify.net/) which written in Java.`gotify-java-client` can be used in Java or Android application.
 
 ## Building from Source
 
@@ -73,16 +73,16 @@ if (result.isSuccessful()) {
 
 Having trouble with `gotify-java-client`? We'd like to help!
 
-* If you are upgrading, read the [release notes](https://github.com/reactor/reactor-netty/releases) for upgrade instructions and *new and noteworthy* features.
-* Report bugs with `gotify-java-client` at [github.com/reactor/reactor-netty/issues](https://github.com/reactor/reactor-netty/issues).
+* If you are upgrading, read the [release notes](https://github.com/ctlove0523/gotify-java-client/releases) for upgrade instructions and *new and noteworthy* features.
+* Report bugs with `gotify-java-client` at [https://github.com/ctlove0523/gotify-java-client/issues](https://github.com/ctlove0523/gotify-java-client/issues).
 
 ## Reporting Issues
 
 `gotify-java-client` uses `GitHub’s` integrated issue tracking system to record bugs and feature requests.
 If you want to raise an issue, please follow the recommendations below:
 
-* Before you log a bug, please [search the issue tracker](https://github.com/reactor/reactor-netty/search?type=Issues) to see if someone has already reported the problem.
-* If the issue doesn't already exist, [create a new issue](https://github.com/reactor/reactor-netty/issues/new/choose).
+* Before you log a bug, please [search the issue tracker](https://github.com/ctlove0523/gotify-java-client/search?type=Issues) to see if someone has already reported the problem.
+* If the issue doesn't already exist, [create a new issue](https://github.com/ctlove0523/gotify-java-client/issues/new/choose).
 * Please provide as much information as possible with the issue report, we like to know
   the version of `gotify-java-client` that you are using, as well as your `Operating System` and
   `JVM` version.
