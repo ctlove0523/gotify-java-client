@@ -33,12 +33,15 @@ public class GotifyRequest {
 			 ResponseBody responseBody = response.body()) {
 			if (responseBody != null) {
 				String content = responseBody.string();
-
-				if (response.isSuccessful()) {
-					return GotifyResult.ok(JacksonUtil.string2Object(content, clazz));
-				}
-				else {
-					return GotifyResult.error(JacksonUtil.string2Object(content, GotifyResponseError.class));
+				if (!content.isEmpty()) {
+					if (response.isSuccessful()) {
+						return GotifyResult.ok(JacksonUtil.string2Object(content, clazz));
+					}
+					else {
+						return GotifyResult.error(JacksonUtil.string2Object(content, GotifyResponseError.class));
+					}
+				} else {
+					return GotifyResult.ok(clazz.cast(response.isSuccessful()));
 				}
 			}
 			else {

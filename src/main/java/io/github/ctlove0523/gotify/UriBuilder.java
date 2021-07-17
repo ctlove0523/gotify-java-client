@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * @author chentong
  */
-public class UriBuilder {
+class UriBuilder {
 	private String scheme;
 	private String host;
 	private int port;

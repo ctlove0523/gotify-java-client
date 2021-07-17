@@ -5,7 +5,7 @@ package io.github.ctlove0523.gotify;
  *
  * @author chentong
  */
-public interface ClientAuthInfoWriter {
+interface ClientAuthInfoWriter {
 
 	GotifyRequest authenticateRequest(GotifyRequest request);
 }

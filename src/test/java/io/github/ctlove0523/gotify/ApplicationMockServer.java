@@ -1,14 +1,16 @@
 package io.github.ctlove0523.gotify;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.ctlove0523.gotify.app.Application;
 import io.github.ctlove0523.gotify.app.CreateApplicationRequest;
+import io.github.ctlove0523.gotify.app.UpdateApplictionRequest;
 import lombok.SneakyThrows;
+import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -43,12 +45,7 @@ public class ApplicationMockServer {
 				if ((method.equals("POST") && path.equals("/application"))) {
 					String content = request.getBody().readString(Charset.defaultCharset());
 
-					System.out.println(content);
-
-					ObjectMapper mapper = new ObjectMapper();
-
-
-					CreateApplicationRequest car = mapper.readValue(content, CreateApplicationRequest.class);
+					CreateApplicationRequest car =JacksonUtil.string2Object(content, CreateApplicationRequest.class);
 
 					Application application = new Application();
 					application.setInternal(car.getInternal());
@@ -60,6 +57,68 @@ public class ApplicationMockServer {
 
 					applications.add(application);
 					response.setBody(JacksonUtil.object2String(application));
+					return response;
+				}
+
+				if (method.equals("PUT") && path.contains("/application")) {
+					String content = request.getBody().readString(Charset.defaultCharset());
+					UpdateApplictionRequest updateApplicationRequest = JacksonUtil
+							.string2Object(content, UpdateApplictionRequest.class);
+
+					Objects.requireNonNull(updateApplicationRequest, "updateApplicationRequest");
+
+					HttpUrl httpUrl = request.getRequestUrl();
+					Objects.requireNonNull(httpUrl, "htpUrl");
+					int id = Integer.parseInt(httpUrl.pathSegments().get(1));
+					for (Application application : applications) {
+						if (id == application.getId()) {
+							application.setName(updateApplicationRequest.getName());
+							application.setDescription(updateApplicationRequest.getDescription());
+
+							response.setBody(JacksonUtil.object2String(application));
+							return response;
+						}
+					}
+				}
+
+				if (method.equals("DELETE") && path.contains("/application")) {
+					HttpUrl httpUrl = request.getRequestUrl();
+					Objects.requireNonNull(httpUrl, "htpUrl");
+					int id = Integer.parseInt(httpUrl.pathSegments().get(1));
+					for (Application application : applications) {
+						if (id == application.getId()) {
+							response.setResponseCode(200);
+							return response;
+						}
+					}
+
+					GotifyResponseError error = new GotifyResponseError();
+					error.setErrorDescription("application not found");
+					error.setErrorCode(404);
+					error.setError("NOT FOUND");
+					response.setResponseCode(404);
+					response.setBody(JacksonUtil.object2String(error));
+					return response;
+				}
+
+				if (method.equals("POST") && path.contains("/image")) {
+					HttpUrl httpUrl = request.getRequestUrl();
+					Objects.requireNonNull(httpUrl, "htpUrl");
+					int id = Integer.parseInt(httpUrl.pathSegments().get(1));
+					for (Application application : applications) {
+						if (id == application.getId()) {
+							application.setImage(request.getBody().readString(StandardCharsets.UTF_8));
+							response.setBody(JacksonUtil.object2String(application));
+							return response;
+						}
+					}
+
+					GotifyResponseError error = new GotifyResponseError();
+					error.setErrorDescription("application not found");
+					error.setErrorCode(404);
+					error.setError("NOT FOUND");
+					response.setResponseCode(404);
+					response.setBody(JacksonUtil.object2String(error));
 					return response;
 				}
 				return null;
