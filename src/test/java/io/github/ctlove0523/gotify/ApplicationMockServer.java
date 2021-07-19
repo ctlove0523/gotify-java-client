@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import io.github.ctlove0523.gotify.app.Application;
 import io.github.ctlove0523.gotify.app.CreateApplicationRequest;
-import io.github.ctlove0523.gotify.app.UpdateApplictionRequest;
+import io.github.ctlove0523.gotify.app.UpdateApplicationRequest;
 import lombok.SneakyThrows;
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.Dispatcher;
@@ -62,8 +62,8 @@ public class ApplicationMockServer {
 
 				if (method.equals("PUT") && path.contains("/application")) {
 					String content = request.getBody().readString(Charset.defaultCharset());
-					UpdateApplictionRequest updateApplicationRequest = JacksonUtil
-							.string2Object(content, UpdateApplictionRequest.class);
+					UpdateApplicationRequest updateApplicationRequest = JacksonUtil
+							.string2Object(content, UpdateApplicationRequest.class);
 
 					Objects.requireNonNull(updateApplicationRequest, "updateApplicationRequest");
 

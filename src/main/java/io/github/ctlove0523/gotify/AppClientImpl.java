@@ -6,7 +6,7 @@ import java.util.Map;
 
 import io.github.ctlove0523.gotify.app.Application;
 import io.github.ctlove0523.gotify.app.CreateApplicationRequest;
-import io.github.ctlove0523.gotify.app.UpdateApplictionRequest;
+import io.github.ctlove0523.gotify.app.UpdateApplicationRequest;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.Request;
@@ -58,9 +58,9 @@ class AppClientImpl implements AppClient {
 	}
 
 	@Override
-	public Result<Application, GotifyResponseError> updateApplication(int id, UpdateApplictionRequest updateApplictionRequest) {
+	public Result<Application, GotifyResponseError> updateApplication(int id, UpdateApplicationRequest updateApplicationRequest) {
 		RequestBody requestBody = RequestBody
-				.create(JacksonUtil.object2String(updateApplictionRequest), MediaType.get("application/json"));
+				.create(JacksonUtil.object2String(updateApplicationRequest), MediaType.get("application/json"));
 
 		Map<String, Object> pathPars = new HashMap<>();
 		pathPars.put("id", id);

@@ -6,7 +6,7 @@ import java.util.Random;
 
 import io.github.ctlove0523.gotify.app.Application;
 import io.github.ctlove0523.gotify.app.CreateApplicationRequest;
-import io.github.ctlove0523.gotify.app.UpdateApplictionRequest;
+import io.github.ctlove0523.gotify.app.UpdateApplicationRequest;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -84,7 +84,7 @@ public class AppClientTest {
 
 		server.addApplication(application);
 
-		UpdateApplictionRequest request = new UpdateApplictionRequest();
+		UpdateApplicationRequest request = new UpdateApplicationRequest();
 		request.setName("updated name");
 		request.setDescription("new description");
 

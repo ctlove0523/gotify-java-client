@@ -8,7 +8,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class UpdateApplictionRequest {
+public class UpdateApplicationRequest {
 	private String name;
 	private String description;
 }
