@@ -20,7 +20,7 @@ class AppClientImpl implements AppClient {
 	}
 
 	@Override
-	public Result<List<Application>, GotifyResponseError> getApplications() {
+	public Result<List<Application>, ResponseError> getApplications() {
 		String url = UriBuilder.builder()
 				.config(clientConfig)
 				.path("/application")
@@ -38,7 +38,7 @@ class AppClientImpl implements AppClient {
 	}
 
 	@Override
-	public Result<Application, GotifyResponseError> createApplication(CreateApplicationRequest createApplicationRequest) {
+	public Result<Application, ResponseError> createApplication(CreateApplicationRequest createApplicationRequest) {
 		RequestBody requestBody = RequestBody
 				.create(JacksonUtil.object2String(createApplicationRequest), MediaType.get("application/json"));
 
@@ -58,7 +58,7 @@ class AppClientImpl implements AppClient {
 	}
 
 	@Override
-	public Result<Application, GotifyResponseError> updateApplication(int id, UpdateApplicationRequest updateApplicationRequest) {
+	public Result<Application, ResponseError> updateApplication(int id, UpdateApplicationRequest updateApplicationRequest) {
 		RequestBody requestBody = RequestBody
 				.create(JacksonUtil.object2String(updateApplicationRequest), MediaType.get("application/json"));
 
@@ -83,7 +83,7 @@ class AppClientImpl implements AppClient {
 	}
 
 	@Override
-	public Result<Boolean, GotifyResponseError> deleteApplication(int id) {
+	public Result<Boolean, ResponseError> deleteApplication(int id) {
 		Map<String, Object> pathPars = new HashMap<>();
 		pathPars.put("id", id);
 
@@ -105,7 +105,7 @@ class AppClientImpl implements AppClient {
 	}
 
 	@Override
-	public Result<Application, GotifyResponseError> uploadApplicationImage(int id, byte[] image) {
+	public Result<Application, ResponseError> uploadApplicationImage(int id, byte[] image) {
 		RequestBody requestBody = new MultipartBody.Builder()
 				.setType(MultipartBody.FORM)
 				.addFormDataPart("file", "fileName",

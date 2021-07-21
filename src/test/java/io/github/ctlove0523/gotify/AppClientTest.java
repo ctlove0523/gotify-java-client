@@ -39,7 +39,7 @@ public class AppClientTest {
 
 		AppClient appClient = gotifyClient.getAppClient();
 
-		Result<List<Application>, GotifyResponseError> result = appClient.getApplications();
+		Result<List<Application>, ResponseError> result = appClient.getApplications();
 
 		Assert.assertTrue(result.isSuccessful());
 		List<Application> apps = result.result();
@@ -59,7 +59,7 @@ public class AppClientTest {
 
 		AppClient appClient = gotifyClient.getAppClient();
 
-		Result<Application, GotifyResponseError> result = appClient.createApplication(request);
+		Result<Application, ResponseError> result = appClient.createApplication(request);
 
 		Assert.assertTrue(result.isSuccessful());
 
@@ -89,7 +89,7 @@ public class AppClientTest {
 		request.setDescription("new description");
 
 		AppClient appClient = newGotifyClient().getAppClient();
-		Result<Application, GotifyResponseError> result = appClient.updateApplication(id, request);
+		Result<Application, ResponseError> result = appClient.updateApplication(id, request);
 
 		Assert.assertTrue(result.isSuccessful());
 
@@ -110,7 +110,7 @@ public class AppClientTest {
 		server.addApplication(application);
 
 		AppClient appClient = newGotifyClient().getAppClient();
-		Result<Boolean, GotifyResponseError> result = appClient.deleteApplication(id);
+		Result<Boolean, ResponseError> result = appClient.deleteApplication(id);
 
 		Assert.assertTrue(result.isSuccessful());
 
@@ -132,7 +132,7 @@ public class AppClientTest {
 		AppClient appClient = newGotifyClient().getAppClient();
 
 		byte[] image = "image".getBytes(StandardCharsets.UTF_8);
-		Result<Application, GotifyResponseError> result = appClient.uploadApplicationImage(id, image);
+		Result<Application, ResponseError> result = appClient.uploadApplicationImage(id, image);
 
 		Assert.assertTrue(result.isSuccessful());
 

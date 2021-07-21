@@ -4,5 +4,5 @@ import io.github.ctlove0523.gotify.version.GotifyVersion;
 
 public interface VersionClient extends CloseableClient {
 
-	Result<GotifyVersion, GotifyResponseError> getVersion();
+	Result<GotifyVersion, ResponseError> getVersion();
 }

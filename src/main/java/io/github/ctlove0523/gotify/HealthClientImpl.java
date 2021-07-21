@@ -11,7 +11,7 @@ class HealthClientImpl implements HealthClient {
 	}
 
 	@Override
-	public Result<Health, GotifyResponseError> getHealth() {
+	public Result<Health, ResponseError> getHealth() {
 		String url = UriBuilder.builder()
 				.config(config)
 				.path("/health")

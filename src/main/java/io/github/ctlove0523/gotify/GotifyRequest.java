@@ -28,7 +28,7 @@ public class GotifyRequest {
 		return new Builder(this);
 	}
 
-	public <T, E> Result<T, GotifyResponseError> execute(Class<T> clazz) {
+	public <T, E> Result<T, ResponseError> execute(Class<T> clazz) {
 		try (Response response = client.newCall(request).execute();
 			 ResponseBody responseBody = response.body()) {
 			if (responseBody != null) {
@@ -38,7 +38,7 @@ public class GotifyRequest {
 						return GotifyResult.ok(JacksonUtil.string2Object(content, clazz));
 					}
 					else {
-						return GotifyResult.error(JacksonUtil.string2Object(content, GotifyResponseError.class));
+						return GotifyResult.error(JacksonUtil.string2Object(content, ResponseError.class));
 					}
 				} else {
 					return GotifyResult.ok(clazz.cast(response.isSuccessful()));
@@ -61,7 +61,7 @@ public class GotifyRequest {
 
 	}
 
-	public <T, E> Result<List<T>, GotifyResponseError> executeReturnList(Class<T> clazz) {
+	public <T, E> Result<List<T>, ResponseError> executeReturnList(Class<T> clazz) {
 		try (Response response = client.newCall(request).execute();
 			 ResponseBody responseBody = response.body()) {
 			String content = responseBody.string();
@@ -72,7 +72,7 @@ public class GotifyRequest {
 				return GotifyResult.ok(mapper.readValue(content, arrayType));
 			}
 			else {
-				return GotifyResult.error(JacksonUtil.string2Object(content, GotifyResponseError.class));
+				return GotifyResult.error(JacksonUtil.string2Object(content, ResponseError.class));
 			}
 		}
 		catch (IOException e) {

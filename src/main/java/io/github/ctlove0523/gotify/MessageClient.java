@@ -4,25 +4,25 @@ import io.github.ctlove0523.gotify.message.Message;
 import io.github.ctlove0523.gotify.message.PagedMessages;
 
 public interface MessageClient extends CloseableClient {
-	Result<PagedMessages, GotifyResponseError> getAppMessages(Integer appId, Integer limit, Integer since);
+	Result<PagedMessages, ResponseError> getAppMessages(Integer appId, Integer limit, Integer since);
 
-	Result<PagedMessages, GotifyResponseError> getAppMessages(Integer appId, Integer limit);
+	Result<PagedMessages, ResponseError> getAppMessages(Integer appId, Integer limit);
 
-	Result<PagedMessages, GotifyResponseError> getAppMessages(Integer appId);
+	Result<PagedMessages, ResponseError> getAppMessages(Integer appId);
 
-	Result<Boolean, GotifyResponseError> deleteAppMessages(Integer appId);
+	Result<Boolean, ResponseError> deleteAppMessages(Integer appId);
 
-	Result<PagedMessages, GotifyResponseError> getMessages();
+	Result<PagedMessages, ResponseError> getMessages();
 
-	Result<PagedMessages, GotifyResponseError> getMessages(Integer limit);
+	Result<PagedMessages, ResponseError> getMessages(Integer limit);
 
-	Result<PagedMessages, GotifyResponseError> getMessages(Integer limit, Integer since);
+	Result<PagedMessages, ResponseError> getMessages(Integer limit, Integer since);
 
-	Result<Message, GotifyResponseError> createMessage(Integer appId, Message message);
+	Result<Message, ResponseError> createMessage(Integer appId, Message message);
 
-	Result<Boolean, GotifyResponseError> deleteMessages();
+	Result<Boolean, ResponseError> deleteMessages();
 
-	Result<Boolean, GotifyResponseError> deleteMessage(Integer id);
+	Result<Boolean, ResponseError> deleteMessage(Integer id);
 
 	void registerMessageHandler(MessageHandler handler);
 }

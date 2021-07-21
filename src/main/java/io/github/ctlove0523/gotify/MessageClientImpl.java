@@ -33,7 +33,7 @@ class MessageClientImpl implements MessageClient {
 
 
 	@Override
-	public Result<PagedMessages, GotifyResponseError> getAppMessages(Integer appId, Integer limit, Integer since) {
+	public Result<PagedMessages, ResponseError> getAppMessages(Integer appId, Integer limit, Integer since) {
 		Map<String, Object> pathParas = new HashMap<>();
 		pathParas.put("id", appId);
 
@@ -65,17 +65,17 @@ class MessageClientImpl implements MessageClient {
 	}
 
 	@Override
-	public Result<PagedMessages, GotifyResponseError> getAppMessages(Integer appId, Integer limit) {
+	public Result<PagedMessages, ResponseError> getAppMessages(Integer appId, Integer limit) {
 		return getAppMessages(appId, limit, null);
 	}
 
 	@Override
-	public Result<PagedMessages, GotifyResponseError> getAppMessages(Integer appId) {
+	public Result<PagedMessages, ResponseError> getAppMessages(Integer appId) {
 		return getAppMessages(appId, 200, null);
 	}
 
 	@Override
-	public Result<Boolean, GotifyResponseError> deleteAppMessages(Integer appId) {
+	public Result<Boolean, ResponseError> deleteAppMessages(Integer appId) {
 		Map<String, Object> pathParas = new HashMap<>();
 		pathParas.put("id", appId);
 
@@ -96,17 +96,17 @@ class MessageClientImpl implements MessageClient {
 	}
 
 	@Override
-	public Result<PagedMessages, GotifyResponseError> getMessages() {
+	public Result<PagedMessages, ResponseError> getMessages() {
 		return getMessages(200, null);
 	}
 
 	@Override
-	public Result<PagedMessages, GotifyResponseError> getMessages(Integer limit) {
+	public Result<PagedMessages, ResponseError> getMessages(Integer limit) {
 		return getMessages(limit, null);
 	}
 
 	@Override
-	public Result<PagedMessages, GotifyResponseError> getMessages(Integer limit, Integer since) {
+	public Result<PagedMessages, ResponseError> getMessages(Integer limit, Integer since) {
 		Map<String, Object> queryParas = new HashMap<>();
 		if (limit != null) {
 			queryParas.put("limit", limit);
@@ -132,12 +132,12 @@ class MessageClientImpl implements MessageClient {
 	}
 
 	@Override
-	public Result<Message, GotifyResponseError> createMessage(Integer appId, Message message) {
+	public Result<Message, ResponseError> createMessage(Integer appId, Message message) {
 		AppClient appClient = new AppClientImpl(clientConfig);
 		String appToken = "";
-		Result<List<Application>, GotifyResponseError> result = appClient.getApplications();
+		Result<List<Application>, ResponseError> result = appClient.getApplications();
 		if (!result.isSuccessful()) {
-			return GotifyResult.error(new GotifyResponseError());
+			return GotifyResult.error(new ResponseError());
 		}
 		for (Application application : result.result()) {
 			if (application.getId().equals(appId)) {
@@ -167,7 +167,7 @@ class MessageClientImpl implements MessageClient {
 	}
 
 	@Override
-	public Result<Boolean, GotifyResponseError> deleteMessages() {
+	public Result<Boolean, ResponseError> deleteMessages() {
 		String url = UriBuilder.builder()
 				.config(clientConfig)
 				.path("/message")
@@ -185,7 +185,7 @@ class MessageClientImpl implements MessageClient {
 	}
 
 	@Override
-	public Result<Boolean, GotifyResponseError> deleteMessage(Integer id) {
+	public Result<Boolean, ResponseError> deleteMessage(Integer id) {
 		Map<String, Object> pathParas = new HashMap<>();
 		pathParas.put("id", id);
 

@@ -4,10 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * @author chentong
+ */
 @Getter
 @Setter
 @ToString
-public class GotifyResponseError {
+public class ResponseError {
 	private String error;
 	private Integer errorCode;
 	private String errorDescription;

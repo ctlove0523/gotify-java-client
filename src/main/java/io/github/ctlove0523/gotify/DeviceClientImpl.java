@@ -17,7 +17,7 @@ public class DeviceClientImpl implements DeviceClient {
 	}
 
 	@Override
-	public Result<List<Client>, GotifyResponseError> getClients() {
+	public Result<List<Client>, ResponseError> getClients() {
 		String url = UriBuilder.builder()
 				.config(clientConfig)
 				.path("/client")
@@ -34,7 +34,7 @@ public class DeviceClientImpl implements DeviceClient {
 	}
 
 	@Override
-	public Result<Client, GotifyResponseError> createClient(Client client) {
+	public Result<Client, ResponseError> createClient(Client client) {
 		RequestBody requestBody = RequestBody
 				.create(JacksonUtil.object2String(client), MediaType.get("application/json"));
 
@@ -55,7 +55,7 @@ public class DeviceClientImpl implements DeviceClient {
 	}
 
 	@Override
-	public Result<Client, GotifyResponseError> updateClient(Integer id, Client client) {
+	public Result<Client, ResponseError> updateClient(Integer id, Client client) {
 		RequestBody requestBody = RequestBody
 				.create(JacksonUtil.object2String(client), MediaType.get("application/json"));
 		Map<String, Object> pathParas = new HashMap<>();
@@ -78,7 +78,7 @@ public class DeviceClientImpl implements DeviceClient {
 	}
 
 	@Override
-	public Result<Boolean, GotifyResponseError> deleteClient(Integer id) {
+	public Result<Boolean, ResponseError> deleteClient(Integer id) {
 
 		Map<String, Object> pathParas = new HashMap<>();
 		pathParas.put("id", id);

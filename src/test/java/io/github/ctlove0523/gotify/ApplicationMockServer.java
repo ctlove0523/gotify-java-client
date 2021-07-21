@@ -92,7 +92,7 @@ public class ApplicationMockServer {
 						}
 					}
 
-					GotifyResponseError error = new GotifyResponseError();
+					ResponseError error = new ResponseError();
 					error.setErrorDescription("application not found");
 					error.setErrorCode(404);
 					error.setError("NOT FOUND");
@@ -113,7 +113,7 @@ public class ApplicationMockServer {
 						}
 					}
 
-					GotifyResponseError error = new GotifyResponseError();
+					ResponseError error = new ResponseError();
 					error.setErrorDescription("application not found");
 					error.setErrorCode(404);
 					error.setError("NOT FOUND");

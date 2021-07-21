@@ -11,7 +11,7 @@ class VersionClientImpl implements VersionClient {
 	}
 
 	@Override
-	public Result<GotifyVersion, GotifyResponseError> getVersion() {
+	public Result<GotifyVersion, ResponseError> getVersion() {
 		String url = UriBuilder.builder()
 				.config(config)
 				.path("/version")

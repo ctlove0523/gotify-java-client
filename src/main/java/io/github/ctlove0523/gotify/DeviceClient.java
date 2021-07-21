@@ -9,11 +9,11 @@ import io.github.ctlove0523.gotify.device.Client;
  */
 public interface DeviceClient extends CloseableClient {
 
-	Result<List<Client>, GotifyResponseError> getClients();
+	Result<List<Client>, ResponseError> getClients();
 
-	Result<Client, GotifyResponseError> createClient(Client client);
+	Result<Client, ResponseError> createClient(Client client);
 
-	Result<Client, GotifyResponseError> updateClient(Integer id, Client client);
+	Result<Client, ResponseError> updateClient(Integer id, Client client);
 
-	Result<Boolean, GotifyResponseError> deleteClient(Integer id);
+	Result<Boolean, ResponseError> deleteClient(Integer id);
 }

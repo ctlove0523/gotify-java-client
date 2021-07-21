@@ -18,7 +18,7 @@ class UserClientImpl implements UserClient {
 	}
 
 	@Override
-	public Result<User, GotifyResponseError> currentUser() {
+	public Result<User, ResponseError> currentUser() {
 		String url = UriBuilder.builder()
 				.config(clientConfig)
 				.path("/current/user")
@@ -37,7 +37,7 @@ class UserClientImpl implements UserClient {
 	}
 
 	@Override
-	public Result<Boolean, GotifyResponseError> updateCurrentUserPassword(UpdateCurrentUserPasswordRequest updateCurrentUserPasswordRequest) {
+	public Result<Boolean, ResponseError> updateCurrentUserPassword(UpdateCurrentUserPasswordRequest updateCurrentUserPasswordRequest) {
 		RequestBody requestBody = RequestBody.create(JacksonUtil.object2String(updateCurrentUserPasswordRequest),
 				MediaType.get("application/json"));
 
@@ -59,7 +59,7 @@ class UserClientImpl implements UserClient {
 	}
 
 	@Override
-	public Result<List<User>, GotifyResponseError> getUsers() {
+	public Result<List<User>, ResponseError> getUsers() {
 		String url = UriBuilder.builder()
 				.config(clientConfig)
 				.path("/user")
@@ -77,7 +77,7 @@ class UserClientImpl implements UserClient {
 	}
 
 	@Override
-	public Result<User, GotifyResponseError> createUser(User user) {
+	public Result<User, ResponseError> createUser(User user) {
 		RequestBody requestBody = RequestBody.create(JacksonUtil.object2String(user),
 				MediaType.get("application/json"));
 
@@ -99,7 +99,7 @@ class UserClientImpl implements UserClient {
 	}
 
 	@Override
-	public Result<User, GotifyResponseError> getUser(Integer id) {
+	public Result<User, ResponseError> getUser(Integer id) {
 		Map<String, Object> pathParas = new HashMap<>();
 		pathParas.put("id", id);
 
@@ -120,7 +120,7 @@ class UserClientImpl implements UserClient {
 	}
 
 	@Override
-	public Result<User, GotifyResponseError> updateUser(User user) {
+	public Result<User, ResponseError> updateUser(User user) {
 		RequestBody requestBody = RequestBody.create(JacksonUtil.object2String(user),
 				MediaType.get("application/json"));
 
@@ -141,7 +141,7 @@ class UserClientImpl implements UserClient {
 	}
 
 	@Override
-	public Result<Boolean, GotifyResponseError> deleteUser(Integer id) {
+	public Result<Boolean, ResponseError> deleteUser(Integer id) {
 		Map<String, Object> pathParas = new HashMap<>();
 		pathParas.put("id", id);
 

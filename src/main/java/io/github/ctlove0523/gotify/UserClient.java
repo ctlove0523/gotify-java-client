@@ -7,17 +7,17 @@ import io.github.ctlove0523.gotify.user.User;
 
 public interface UserClient extends CloseableClient {
 
-	Result<User, GotifyResponseError> currentUser();
+	Result<User, ResponseError> currentUser();
 
-	Result<Boolean, GotifyResponseError> updateCurrentUserPassword(UpdateCurrentUserPasswordRequest updateCurrentUserPasswordRequest);
+	Result<Boolean, ResponseError> updateCurrentUserPassword(UpdateCurrentUserPasswordRequest updateCurrentUserPasswordRequest);
 
-	Result<List<User>, GotifyResponseError> getUsers();
+	Result<List<User>, ResponseError> getUsers();
 
-	Result<User, GotifyResponseError> createUser(User user);
+	Result<User, ResponseError> createUser(User user);
 
-	Result<User, GotifyResponseError> getUser(Integer id);
+	Result<User, ResponseError> getUser(Integer id);
 
-	Result<User, GotifyResponseError> updateUser(User user);
+	Result<User, ResponseError> updateUser(User user);
 
-	Result<Boolean, GotifyResponseError> deleteUser(Integer id);
+	Result<Boolean, ResponseError> deleteUser(Integer id);
 }
