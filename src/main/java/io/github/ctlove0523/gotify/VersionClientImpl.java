@@ -1,6 +1,6 @@
 package io.github.ctlove0523.gotify;
 
-import io.github.ctlove0523.gotify.version.GotifyVersion;
+import io.github.ctlove0523.gotify.version.Version;
 import okhttp3.Request;
 
 class VersionClientImpl implements VersionClient {
@@ -11,7 +11,7 @@ class VersionClientImpl implements VersionClient {
 	}
 
 	@Override
-	public Result<GotifyVersion, ResponseError> getVersion() {
+	public Result<Version, ResponseError> getVersion() {
 		String url = UriBuilder.builder()
 				.config(config)
 				.path("/version")
@@ -26,6 +26,6 @@ class VersionClientImpl implements VersionClient {
 				.request(request)
 				.clientAuthInfoWriter(ClientAuthInfoWriterFactory.writer(config.getCredential()))
 				.build()
-				.execute(GotifyVersion.class);
+				.execute(Version.class);
 	}
 }

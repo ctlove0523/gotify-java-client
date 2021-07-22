@@ -3,6 +3,9 @@ package io.github.ctlove0523.gotify;
 import io.github.ctlove0523.gotify.message.Message;
 import io.github.ctlove0523.gotify.message.PagedMessages;
 
+/**
+ * @author chentong
+ */
 public interface MessageClient extends CloseableClient {
 	Result<PagedMessages, ResponseError> getAppMessages(Integer appId, Integer limit, Integer since);
 

@@ -11,7 +11,7 @@ import org.java_websocket.handshake.ServerHandshake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class GotifyClientWebSocketClient extends WebSocketClient {
+public class GotifyClientWebSocketClient extends WebSocketClient {
 	private static final Logger log = LoggerFactory.getLogger(GotifyClientWebSocketClient.class);
 	private final List<MessageHandler> handlers = new ArrayList<>();
 
