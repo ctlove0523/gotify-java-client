@@ -45,7 +45,7 @@ public class ApplicationMockServer {
 				if ((method.equals("POST") && path.equals("/application"))) {
 					String content = request.getBody().readString(Charset.defaultCharset());
 
-					CreateApplicationRequest car =JacksonUtil.string2Object(content, CreateApplicationRequest.class);
+					CreateApplicationRequest car = JacksonUtil.string2Object(content, CreateApplicationRequest.class);
 
 					Application application = new Application();
 					application.setInternal(car.getInternal());

@@ -40,7 +40,8 @@ public class GotifyRequest {
 					else {
 						return GotifyResult.error(JacksonUtil.string2Object(content, ResponseError.class));
 					}
-				} else {
+				}
+				else {
 					return GotifyResult.ok(clazz.cast(response.isSuccessful()));
 				}
 			}

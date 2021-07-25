@@ -16,4 +16,6 @@ public interface GotifyClient {
 	VersionClient getVersionClient();
 
 	UserClient getUserClient();
+
+	PluginClient getPluginClient();
 }

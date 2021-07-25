@@ -19,6 +19,8 @@ class GotifyClientImpl implements GotifyClient {
 
 	private final AtomicReference<UserClient> userClientRef = new AtomicReference<>();
 
+	private final AtomicReference<PluginClient> pluginClientRef = new AtomicReference<>();
+
 	public GotifyClientImpl(GotifyClientConfig clientConfig) {
 		this.clientConfig = clientConfig;
 	}
@@ -51,6 +53,11 @@ class GotifyClientImpl implements GotifyClient {
 	@Override
 	public UserClient getUserClient() {
 		return newClient(userClientRef, UserClientImpl::new);
+	}
+
+	@Override
+	public PluginClient getPluginClient() {
+		return newClient(pluginClientRef, PluginClientImpl::new);
 	}
 
 	private synchronized <T extends CloseableClient> T newClient(AtomicReference<T> reference,
