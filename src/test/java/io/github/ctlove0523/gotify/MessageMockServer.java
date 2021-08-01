@@ -18,11 +18,12 @@ import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.jetbrains.annotations.NotNull;
 
-public class MessageMockServer {
+public class MessageMockServer implements MockerServer {
 	private MockWebServer server;
 
 	private Map<Integer, List<Message>> appMessages = new HashMap<>();
 
+	@Override
 	public int port() {
 		return server.getPort();
 	}

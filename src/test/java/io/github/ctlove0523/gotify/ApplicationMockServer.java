@@ -17,7 +17,7 @@ import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.jetbrains.annotations.NotNull;
 
-public class ApplicationMockServer {
+public class ApplicationMockServer implements MockerServer {
 
 	private MockWebServer server;
 
@@ -139,6 +139,7 @@ public class ApplicationMockServer {
 		applications.add(application);
 	}
 
+	@Override
 	public int port() {
 		return server.getPort();
 	}

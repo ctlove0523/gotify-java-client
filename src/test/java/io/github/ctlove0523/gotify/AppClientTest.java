@@ -2,7 +2,6 @@ package io.github.ctlove0523.gotify;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Random;
 
 import io.github.ctlove0523.gotify.app.Application;
 import io.github.ctlove0523.gotify.app.CreateApplicationRequest;
@@ -12,9 +11,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AppClientTest {
+public class AppClientTest extends BaseTest {
 	private ApplicationMockServer server = new ApplicationMockServer();
-	private Random random = new Random();
 
 	@Before
 	public void starServer() throws Exception {
@@ -35,7 +33,7 @@ public class AppClientTest {
 
 		server.addApplication(application);
 
-		GotifyClient gotifyClient = newGotifyClient();
+		GotifyClient gotifyClient = newGotifyClient(server);
 
 		AppClient appClient = gotifyClient.getAppClient();
 
@@ -55,7 +53,7 @@ public class AppClientTest {
 		request.setInternal(true);
 		request.setImage("image");
 
-		GotifyClient gotifyClient = newGotifyClient();
+		GotifyClient gotifyClient = newGotifyClient(server);
 
 		AppClient appClient = gotifyClient.getAppClient();
 
@@ -88,7 +86,7 @@ public class AppClientTest {
 		request.setName("updated name");
 		request.setDescription("new description");
 
-		AppClient appClient = newGotifyClient().getAppClient();
+		AppClient appClient = newGotifyClient(server).getAppClient();
 		Result<Application, ResponseError> result = appClient.updateApplication(id, request);
 
 		Assert.assertTrue(result.isSuccessful());
@@ -109,7 +107,7 @@ public class AppClientTest {
 
 		server.addApplication(application);
 
-		AppClient appClient = newGotifyClient().getAppClient();
+		AppClient appClient = newGotifyClient(server).getAppClient();
 		Result<Boolean, ResponseError> result = appClient.deleteApplication(id);
 
 		Assert.assertTrue(result.isSuccessful());
@@ -129,7 +127,7 @@ public class AppClientTest {
 
 		server.addApplication(application);
 
-		AppClient appClient = newGotifyClient().getAppClient();
+		AppClient appClient = newGotifyClient(server).getAppClient();
 
 		byte[] image = "image".getBytes(StandardCharsets.UTF_8);
 		Result<Application, ResponseError> result = appClient.uploadApplicationImage(id, image);
@@ -143,19 +141,4 @@ public class AppClientTest {
 		Assert.assertFalse(result.isSuccessful());
 	}
 
-	private GotifyClient newGotifyClient() {
-		Credential credential = new BasicCredential.Builder()
-				.userName("admin")
-				.password("admin")
-				.build();
-
-		GotifyClientConfig config = new GotifyClientConfig.Builder()
-				.scheme("http")
-				.host("localhost")
-				.port(server.port())
-				.credential(credential)
-				.build();
-
-		return GotifyClient.build(config);
-	}
 }

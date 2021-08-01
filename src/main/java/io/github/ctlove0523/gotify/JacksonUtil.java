@@ -68,7 +68,7 @@ public class JacksonUtil {
 		catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return "";
 	}
 
 	public static <T> T string2Object(String content, Class<T> clazz) {

@@ -1,7 +1,6 @@
 package io.github.ctlove0523.gotify;
 
 import java.util.List;
-import java.util.Random;
 
 import io.github.ctlove0523.gotify.message.Message;
 import io.github.ctlove0523.gotify.message.PagedMessages;
@@ -10,11 +9,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MessageClientTest {
-
+public class MessageClientTest extends BaseTest {
 	private final MessageMockServer server = new MessageMockServer();
-
-	private final Random random = new Random();
 
 	@Before
 	public void startServer() throws Exception {
@@ -48,7 +44,7 @@ public class MessageClientTest {
 		server.addMessage(message2);
 
 
-		MessageClient messageClient = newGotifyClient().getMessageClient();
+		MessageClient messageClient = newGotifyClient(server).getMessageClient();
 		Result<PagedMessages, ResponseError> response = messageClient.getAppMessages(appId);
 
 		Assert.assertNotNull(response);
@@ -80,7 +76,7 @@ public class MessageClientTest {
 		server.addMessage(message1);
 		server.addMessage(message2);
 
-		MessageClient messageClient = newGotifyClient().getMessageClient();
+		MessageClient messageClient = newGotifyClient(server).getMessageClient();
 
 		Result<Boolean, ResponseError> result = messageClient.deleteAppMessages(appId);
 		Assert.assertTrue(result.isSuccessful());
@@ -110,7 +106,7 @@ public class MessageClientTest {
 		server.addMessage(message1);
 		server.addMessage(message2);
 
-		MessageClient messageClient = newGotifyClient().getMessageClient();
+		MessageClient messageClient = newGotifyClient(server).getMessageClient();
 
 		Result<PagedMessages, ResponseError> result = messageClient.getMessages();
 		Assert.assertTrue(result.isSuccessful());
@@ -143,7 +139,7 @@ public class MessageClientTest {
 		List<Message> messages = server.getMessages();
 		Assert.assertEquals(2, messages.size());
 
-		MessageClient messageClient = newGotifyClient().getMessageClient();
+		MessageClient messageClient = newGotifyClient(server).getMessageClient();
 
 		Result<Boolean, ResponseError> result = messageClient.deleteMessages();
 		Assert.assertTrue(result.isSuccessful());
@@ -179,29 +175,13 @@ public class MessageClientTest {
 		List<Message> messages = server.getMessages();
 		Assert.assertEquals(2, messages.size());
 
-		MessageClient messageClient = newGotifyClient().getMessageClient();
+		MessageClient messageClient = newGotifyClient(server).getMessageClient();
 
 		Result<Boolean, ResponseError> result = messageClient.deleteMessage(messageId1);
 		Assert.assertTrue(result.isSuccessful());
 
 		messages = server.getMessages();
 		Assert.assertEquals(1, messages.size());
-
 	}
 
-	private GotifyClient newGotifyClient() {
-		Credential credential = new BasicCredential.Builder()
-				.userName("admin")
-				.password("admin")
-				.build();
-
-		GotifyClientConfig config = new GotifyClientConfig.Builder()
-				.scheme("http")
-				.host("localhost")
-				.port(server.port())
-				.credential(credential)
-				.build();
-
-		return GotifyClient.build(config);
-	}
 }
