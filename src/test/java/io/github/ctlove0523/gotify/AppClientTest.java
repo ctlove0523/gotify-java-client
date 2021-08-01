@@ -15,7 +15,7 @@ public class AppClientTest extends BaseTest {
 	private ApplicationMockServer server = new ApplicationMockServer();
 
 	@Before
-	public void starServer() throws Exception {
+	public void startServer() throws Exception {
 		server.start();
 	}
 
