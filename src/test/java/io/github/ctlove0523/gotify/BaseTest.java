@@ -22,9 +22,7 @@ public abstract class BaseTest {
 				.build();
 
 		GotifyClientConfig config = new GotifyClientConfig.Builder()
-				.scheme("http")
-				.host("localhost")
-				.port(server.port())
+				.endpoint("http://localhost:" + server.port())
 				.credential(credential)
 				.build();
 

@@ -1,5 +1,6 @@
 package io.github.ctlove0523.gotify;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Base64;
 import java.util.HashMap;
@@ -7,28 +8,40 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.sun.jndi.toolkit.url.Uri;
 import io.github.ctlove0523.gotify.app.Application;
 import io.github.ctlove0523.gotify.message.Message;
 import io.github.ctlove0523.gotify.message.PagedMessages;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class MessageClientImpl implements MessageClient {
+	private static final Logger log = LoggerFactory.getLogger(MessageClientImpl.class);
+
 	private final GotifyClientConfig clientConfig;
 
-	private final GotifyClientWebSocketClient webSocketClient;
+	private GotifyClientWebSocketClient webSocketClient;
 
 	public MessageClientImpl(GotifyClientConfig clientConfig) {
 		this.clientConfig = clientConfig;
 
-		String uri = "ws://" + clientConfig.getHost() + ":" + clientConfig.getPort() + "/stream";
-		String authInfo = clientConfig.getCredential().getUserName() + ":" + clientConfig.getCredential().getPassword();
-		String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
+		try {
+			Uri endpointUri = new Uri(clientConfig.getEndpoint());
+			String uri = "ws://" + endpointUri.getHost() + ":" + endpointUri.getPort() + "/stream";
+			String authInfo = clientConfig.getCredential().getUserName() + ":" + clientConfig.getCredential()
+					.getPassword();
+			String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());
 
-		this.webSocketClient = new GotifyClientWebSocketClient(URI.create(uri));
-		webSocketClient.addHeader("Authorization", "Basic " + authorization);
-		webSocketClient.connect();
+			this.webSocketClient = new GotifyClientWebSocketClient(URI.create(uri));
+			webSocketClient.addHeader("Authorization", "Basic " + authorization);
+			webSocketClient.connect();
+		}
+		catch (MalformedURLException e) {
+			log.error("malformed url exception ", e);
+		}
 	}
 
 
