@@ -2,13 +2,13 @@ package io.github.ctlove0523.gotify;
 
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import com.sun.jndi.toolkit.url.Uri;
 import io.github.ctlove0523.gotify.app.Application;
 import io.github.ctlove0523.gotify.message.Message;
 import io.github.ctlove0523.gotify.message.PagedMessages;
@@ -29,7 +29,7 @@ class MessageClientImpl implements MessageClient {
 		this.clientConfig = clientConfig;
 
 		try {
-			Uri endpointUri = new Uri(clientConfig.getEndpoint());
+			URI endpointUri = new URI(clientConfig.getEndpoint());
 			String uri = "ws://" + endpointUri.getHost() + ":" + endpointUri.getPort() + "/stream";
 			String authInfo = clientConfig.getCredential().getUserName() + ":" + clientConfig.getCredential()
 					.getPassword();
@@ -38,9 +38,8 @@ class MessageClientImpl implements MessageClient {
 			this.webSocketClient = new GotifyClientWebSocketClient(URI.create(uri));
 			webSocketClient.addHeader("Authorization", "Basic " + authorization);
 			webSocketClient.connect();
-		}
-		catch (MalformedURLException e) {
-			log.error("malformed url exception ", e);
+		} catch (URISyntaxException syntaxException) {
+			log.warn(syntaxException.toString());
 		}
 	}
 
