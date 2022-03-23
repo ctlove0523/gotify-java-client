@@ -43,18 +43,18 @@ Credential credential=new BasicCredential.Builder()
 		.build();
 
 // 创建客户端配置
-		GotifyClientConfig config=new GotifyClientConfig.Builder()
-		.scheme("http")
-		.host("localhost")
-		.port(80)
-		.credential(credential)
-		.build();
+GotifyClientConfig config=new GotifyClientConfig.Builder()
+	.scheme("http")
+	.host("localhost")
+	.port(80)
+	.credential(credential)
+	.build();
 
-		GotifyClient gotifyClient=GotifyClient.build(config);
+GotifyClient gotifyClient=GotifyClient.build(config);
 
-		AppClient appClient=gotifyClient.getAppClient();
+AppClient appClient=gotifyClient.getAppClient();
 
-		Result<List<Application>,GotifyResponseError>result=appClient.getApplications();
+Result<List<Application>,GotifyResponseError>result=appClient.getApplications();
 ```
 
 `gotify-java-client` 所有公开的方法都会返回一个`Result<T,E>` 对象，如果方法调用成功，那么`isSuccessful()` 方法返回`true`，否则返回`false` ，可以调用`error()`
