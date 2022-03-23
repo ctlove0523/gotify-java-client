@@ -1,6 +1,5 @@
 package io.github.ctlove0523.gotify;
 
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Base64;
@@ -30,7 +29,7 @@ class MessageClientImpl implements MessageClient {
 
 		try {
 			URI endpointUri = new URI(clientConfig.getEndpoint());
-			String uri = "ws://" + endpointUri.getHost() + ":" + endpointUri.getPort() + "/stream";
+			String uri = "ws://" + endpointUri.getHost() + ":" + endpointUri.getPort() + clientConfig.getMessagePath();
 			String authInfo = clientConfig.getCredential().getUserName() + ":" + clientConfig.getCredential()
 					.getPassword();
 			String authorization = Base64.getEncoder().encodeToString(authInfo.getBytes());

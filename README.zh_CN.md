@@ -36,25 +36,20 @@ $ mvn clean install
 如果对`Gotify` 还不熟悉，可以参考 [Gotify](https://gotify.net/) 和 [Gotify API](https://gotify.net/api-docs) 进行学习。下面是一个非常简单的获取应用的样例：
 
 ```java
-// 创建凭证
 Credential credential=new BasicCredential.Builder()
 		.userName("admin")
 		.password("admin")
 		.build();
 
-// 创建客户端配置
 GotifyClientConfig config=new GotifyClientConfig.Builder()
-	.scheme("http")
-	.host("localhost")
-	.port(80)
-	.credential(credential)
-	.build();
+		.endpoint("http://localhost")
+		.credential(credential)
+		.build();
 
 GotifyClient gotifyClient=GotifyClient.build(config);
 
-AppClient appClient=gotifyClient.getAppClient();
-
-Result<List<Application>,GotifyResponseError>result=appClient.getApplications();
+MessageClient messageClient = gotifyClient.getMessageClient();
+messageClient.registerMessageHandler(message -> System.out.println(message.getMessage()));
 ```
 
 `gotify-java-client` 所有公开的方法都会返回一个`Result<T,E>` 对象，如果方法调用成功，那么`isSuccessful()` 方法返回`true`，否则返回`false` ，可以调用`error()`

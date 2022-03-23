@@ -39,25 +39,20 @@ New to `Gotify`? Check this [Gotify](https://gotify.net/) and the [Gotify API](h
 very simple example about get applications from gotify server.
 
 ```java
-// credential about gotify server,like user name and user password
 Credential credential=new BasicCredential.Builder()
 		.userName("admin")
 		.password("admin")
 		.build();
 
-// config gotify server listen address and port.
 GotifyClientConfig config=new GotifyClientConfig.Builder()
-	.scheme("http")
-	.host("localhost")
-	.port(80)
-	.credential(credential)
-	.build();
+		.endpoint("http://localhost")
+		.credential(credential)
+		.build();
 
 GotifyClient gotifyClient=GotifyClient.build(config);
 
-AppClient appClient=gotifyClient.getAppClient();
-
-Result<List<Application>,GotifyResponseError>result=appClient.getApplications();
+MessageClient messageClient = gotifyClient.getMessageClient();
+messageClient.registerMessageHandler(message -> System.out.println(message.getMessage()));
 ```
 
 All public method return one `Resutl<T,E>` object,when method success `isSuccessful()`method return true otherwise
