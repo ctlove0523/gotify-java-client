@@ -9,8 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Paging {
-	private Integer limit;
-	private String next;
-	private Integer since;
-	private Integer size;
+    private Integer limit;
+    private String next;
+    private Integer since;
+    private Integer size;
 }

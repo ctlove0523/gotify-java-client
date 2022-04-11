@@ -1,9 +1,9 @@
 package io.github.ctlove0523.gotify.plugin;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
  * @author chentong
@@ -11,21 +11,21 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PluginConf {
-	private String author;
+    private String author;
 
-	private List<String> capabilities;
+    private List<String> capabilities;
 
-	private boolean enabled;
+    private boolean enabled;
 
-	private int id;
+    private int id;
 
-	private String license;
+    private String license;
 
-	private String modulePath;
+    private String modulePath;
 
-	private String name;
+    private String name;
 
-	private String token;
+    private String token;
 
-	private String website;
+    private String website;
 }

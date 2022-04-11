@@ -9,10 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Application {
-	private Integer id;
-	private String name;
-	private String description;
-	private String image;
-	private String token;
-	private Boolean internal;
+    private Integer id;
+    private String name;
+    private String description;
+    private String image;
+    private String token;
+    private Boolean internal;
 }

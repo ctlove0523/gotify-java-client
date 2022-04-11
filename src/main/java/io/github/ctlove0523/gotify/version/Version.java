@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Version {
-	private String buildDate;
-	private String commit;
-	private String version;
+    private String buildDate;
+    private String commit;
+    private String version;
 }

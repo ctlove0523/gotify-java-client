@@ -9,6 +9,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Health {
-	private String database;
-	private String health;
+    private String database;
+    private String health;
 }

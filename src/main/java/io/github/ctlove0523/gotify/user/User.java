@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class User {
-	private Boolean admin;
-	private Integer id;
-	private String name;
+    private Boolean admin;
+    private Integer id;
+    private String name;
 }

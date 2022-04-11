@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UpdateCurrentUserPasswordRequest {
-	private String pass;
+    private String pass;
 }

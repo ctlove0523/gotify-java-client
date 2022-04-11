@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Client {
-	private Integer id;
-	private String name;
-	private String token;
+    private Integer id;
+    private String name;
+    private String token;
 }

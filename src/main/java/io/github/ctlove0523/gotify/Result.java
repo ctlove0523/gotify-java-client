@@ -4,11 +4,11 @@ import java.io.IOException;
 
 public interface Result<T, E> {
 
-	T result();
+    T result();
 
-	E error();
+    E error();
 
-	IOException exception();
+    IOException exception();
 
-	boolean isSuccessful();
+    boolean isSuccessful();
 }

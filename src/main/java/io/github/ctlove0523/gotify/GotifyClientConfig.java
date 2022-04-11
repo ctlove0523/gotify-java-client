@@ -4,11 +4,13 @@ public class GotifyClientConfig {
     private final String endpoint;
     private final Credential credential;
     private final String messagePath;
+    private final KeyStoreProvider keyStoreProvider;
 
     GotifyClientConfig(Builder builder) {
         this.credential = builder.credential;
         this.endpoint = builder.endpoint;
-		this.messagePath = builder.messagePath;
+        this.messagePath = builder.messagePath;
+        this.keyStoreProvider = builder.keyStoreProvider;
     }
 
     String getEndpoint() {
@@ -19,14 +21,19 @@ public class GotifyClientConfig {
         return credential;
     }
 
-	String getMessagePath() {
-		return messagePath;
-	}
+    String getMessagePath() {
+        return messagePath;
+    }
+
+    KeyStoreProvider getKeyStoreProvider() {
+        return this.keyStoreProvider;
+    }
 
     public static class Builder {
         private Credential credential;
         private String endpoint;
         private String messagePath = "/stream";
+        private KeyStoreProvider keyStoreProvider;
 
         public Builder builder() {
             return new Builder();
@@ -51,6 +58,11 @@ public class GotifyClientConfig {
          */
         public Builder messagePath(String messagePath) {
             this.messagePath = messagePath;
+            return this;
+        }
+
+        public Builder keyStoreProvider(KeyStoreProvider keyStoreProvider) {
+            this.keyStoreProvider = keyStoreProvider;
             return this;
         }
 

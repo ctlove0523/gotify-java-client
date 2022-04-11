@@ -4,5 +4,5 @@ import io.github.ctlove0523.gotify.message.Message;
 
 public interface MessageHandler {
 
-	void handle(Message message);
+    void handle(Message message);
 }

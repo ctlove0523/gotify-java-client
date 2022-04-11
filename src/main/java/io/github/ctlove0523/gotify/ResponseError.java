@@ -11,7 +11,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class ResponseError {
-	private String error;
-	private Integer errorCode;
-	private String errorDescription;
+    private String error;
+    private Integer errorCode;
+    private String errorDescription;
 }

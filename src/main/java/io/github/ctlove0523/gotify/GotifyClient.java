@@ -1,21 +1,21 @@
 package io.github.ctlove0523.gotify;
 
 public interface GotifyClient {
-	static GotifyClient build(GotifyClientConfig config) {
-		return new GotifyClientImpl(config);
-	}
+    static GotifyClient build(GotifyClientConfig config) {
+        return new GotifyClientImpl(config);
+    }
 
-	AppClient getAppClient();
+    AppClient getAppClient();
 
-	MessageClient getMessageClient();
+    MessageClient getMessageClient();
 
-	DeviceClient getDeviceClient();
+    DeviceClient getDeviceClient();
 
-	HealthClient getHealthClient();
+    HealthClient getHealthClient();
 
-	VersionClient getVersionClient();
+    VersionClient getVersionClient();
 
-	UserClient getUserClient();
+    UserClient getUserClient();
 
-	PluginClient getPluginClient();
+    PluginClient getPluginClient();
 }
